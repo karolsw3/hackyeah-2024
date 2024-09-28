@@ -4,15 +4,18 @@ import ConversationMessage from './ConversationMessage.tsx'
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 import classNames from 'classnames'
 import ConversationHeader from './ConversationHeader.tsx'
+import { IConversation } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 
 const MainChatWindow: React.FC = () => {
-	const conversations = useApiCommunicatorStore((state) => state.conversations);
 	const currentlyOpenConversationId = useApiCommunicatorStore((state) => state.currentlyOpenConversationId);
+	const currentConversation = useApiCommunicatorStore((state) => {
+			return state.conversations.find((conversation: IConversation) => conversation._id === state.currentlyOpenConversationId)
+	});
+
 	const messages = useMemo(() => {
-		const currentConversation = conversations.find(conversation => conversation._id === currentlyOpenConversationId);
 		if (!currentConversation) return [];
-		return currentConversation.messages;
-	}, [conversations, currentlyOpenConversationId]);
+		return currentConversation.messages
+	}, [currentConversation]);
 
 	return (
 		<div
@@ -30,7 +33,7 @@ const MainChatWindow: React.FC = () => {
 					<ConversationMessage
 						isMessageFirst={index === 0}
 						isMessageLast={index === messages.length - 1}
-						key={`conversation-message-${message.timestamp }`}
+						key={`conversation-message-${message.timestamp}-${message.role}`}
 						{ ...message }
 					/>
 				))}

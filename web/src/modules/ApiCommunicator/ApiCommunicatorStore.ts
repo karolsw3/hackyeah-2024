@@ -1,7 +1,9 @@
 import { create } from 'zustand'
-import type {
+import { produce } from 'immer'
+import {
 	ApiCommunicator,
 	IConversation,
+	MessageRole,
 	SendMessageProps
 } from './ApiCommunicator.ts'
 import { ApiCommunicatorMockup } from './ApiCommunicatorMockup.tsx'
@@ -41,5 +43,19 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 		}
 
 		await apiCommunicator.sendMessage(payload)
+		const currentlyOpenConversationId = get().currentlyOpenConversationId;
+		const conversations = get().conversations;
+		const currentConversationIndex = conversations.findIndex(conversation => conversation._id === currentlyOpenConversationId);
+		if (currentConversationIndex < 0) {
+			console.warn('Attempted to push to a non-existent conversation.')
+			return;
+		}
+		set(produce((state: ApiCommunicatorState) => {
+			state.conversations[currentConversationIndex].messages.push({
+				timestamp: new Date().getTime(),
+				text: message,
+				role: MessageRole.USER
+			})
+		}))
 	}
 }))
