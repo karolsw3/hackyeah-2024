@@ -3,34 +3,34 @@ import InputArea from './InputArea.tsx'
 import ConversationMessage from './ConversationMessage.tsx'
 import { useEffect } from 'react'
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
+import classNames from 'classnames'
 
-type MainChatWindowProps = {
-	title: string;
-}
-
-const MainChatWindow: React.FC<MainChatWindowProps> = (props) => {
-	const { title } = props;
+const MainChatWindow: React.FC = () => {
 	const messages = useApiCommunicatorStore((state) => state.messages);
 	const fetchMessages = useApiCommunicatorStore((state) => state.fetchMessages);
 
 	useEffect(() => {
-		console.log('fetching messages')
 		fetchMessages()
 	}, [fetchMessages])
 
 	return (
-		<>
-			<div>
-				{ title }
+		<div
+			className={classNames(
+				'h-screen flex flex-col'
+			)}
+		>
+			<div
+				className={'py-10 flex-1'}
+			>
 				{messages.map((message) => (
 					<ConversationMessage
 						key={`conversation-message-${message.timestamp}`}
 						{...message}
 					/>
-				)) }
+				))}
 			</div>
 			<InputArea />
-		</>
+		</div>
 	)
 }
 
