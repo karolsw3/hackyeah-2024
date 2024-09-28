@@ -31,21 +31,21 @@ const mockupGetConversationHistory: GetConversationHistoryResponse = {
 };
 
 export class ApiCommunicatorMockup implements ApiCommunicator {
-	sendMessage = (props: SendMessageProps) => {
+	sendMessage = async (props: SendMessageProps) => {
 		console.log(props)
 		return mockupSendMessageResponse;
 	}
 
-	endConversation = () => {
+	endConversation = async () => {
 		return mockupEndConversationResponse;
 	}
 
-	getHistories = (sessionId: string) => {
+	getHistories = async (sessionId: string) => {
 		console.log(sessionId)
 		return mockupGetHistoriesResponse;
 	}
 
-	getConversationHistory = (conversationId: string) => {
+	getConversationHistory = async (conversationId: string) => {
 		console.log(conversationId)
 		return mockupGetConversationHistory;
 	}

@@ -1,7 +1,8 @@
-import { mockupApiCommunicator } from '../main.tsx'
 import { useState } from 'react'
+import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 
 const InputArea = () => {
+	const sendMessage = useApiCommunicatorStore((state) => state.sendMessage);
 	const [inputValue, setInputValue] = useState('');
 
 	const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -11,17 +12,20 @@ const InputArea = () => {
 		handleInputEnterPressed()
 	}
 
-	const handleInputEnterPressed = () => {
-		mockupApiCommunicator.sendMessage({
-			message: inputValue,
-		})
-		setInputValue('')
+	const handleInputEnterPressed = async () => {
+		try {
+			await sendMessage(inputValue)
+			setInputValue('')
+		} catch (error) {
+			console.error(error)
+		}
 	}
 
 	return (
 		<>
 			<input
 				type={'text'}
+				value={inputValue}
 				onChange={e => setInputValue(e.target.value)}
 				onKeyDown={handleInputKeyDown}
 			/>

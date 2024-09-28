@@ -1,25 +1,22 @@
+import React from 'react'
 import InputArea from './InputArea.tsx'
 import ConversationMessage from './ConversationMessage.tsx'
-import { useEffect, useState } from 'react'
-import { mockupApiCommunicator } from '../main.tsx'
+import { useEffect } from 'react'
+import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 
 type MainChatWindowProps = {
 	title: string;
 }
 
-const MainChatWindow = (props: MainChatWindowProps) => {
+const MainChatWindow: React.FC<MainChatWindowProps> = (props) => {
 	const { title } = props;
-	const [messages, setMessages] = useState<ConversationMessage[]>([]);
-	
-	const handleGetMessages = async () => {
-		const { messages: newMessages } = mockupApiCommunicator.getConversationHistory('randomId')
-		setMessages(newMessages);
-		return
-	}
+	const messages = useApiCommunicatorStore((state) => state.messages);
+	const fetchMessages = useApiCommunicatorStore((state) => state.fetchMessages);
 
 	useEffect(() => {
-		handleGetMessages()
-	}, [])
+		console.log('fetching messages')
+		fetchMessages()
+	}, [fetchMessages])
 
 	return (
 		<>

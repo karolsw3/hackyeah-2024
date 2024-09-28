@@ -32,10 +32,10 @@ export type SendMessageProps = {
 
 export interface ApiCommunicator {
 	/* Conversations */
-	sendMessage: (props: SendMessageProps) => SendMessageResponse;
-	endConversation: () => EndConversationResponse;
+	sendMessage: (props: SendMessageProps) => Promise<SendMessageResponse>;
+	endConversation: () => Promise<EndConversationResponse>;
 	
 	/* History */
-	getHistories: (sessionId: string) => GetHistoriesResponse;
-	getConversationHistory: (conversationId: string) => GetConversationHistoryResponse;
+	getHistories: (sessionId: string) => Promise<GetHistoriesResponse>;
+	getConversationHistory: (conversationId: string) => Promise<GetConversationHistoryResponse>;
 }
