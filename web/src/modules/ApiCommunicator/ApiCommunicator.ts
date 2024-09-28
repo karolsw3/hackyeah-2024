@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 export enum MessageRole {
 	USER = "USER",
 	COMPLETION = "COMPLETION",
@@ -34,7 +36,7 @@ export type SendMessageProps = {
 
 export interface ApiCommunicator {
 	/* Conversations */
-	sendMessage: (props: SendMessageProps) => Promise<void>;
+	sendMessage: (props: SendMessageProps) => Promise<AxiosResponse>;
 	getConversations: () => Promise<GetConversationsResponse>;
 	createConversation: () => Promise<IConversation>;
 	/* Users */
