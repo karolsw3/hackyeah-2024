@@ -11,22 +11,22 @@ const InputArea = () => {
 	} = useApiCommunicatorStore.getState();
 	const [inputValue, setInputValue] = useState('');
 
-	const trySendMessage = useCallback(async () => {
+	const handleSendMessage = useCallback(async () => {
 		try {
+			setInputValue('')
 			if (!currentlyOpenConversationId) {
 				await createUser()
 				await createConversation()
 			}
 			await sendMessage(inputValue)
-			setInputValue('')
 		} catch (error) {
 			console.error(error)
 		}
 	}, [sendMessage, inputValue, currentlyOpenConversationId, createUser, createConversation])
 
 	const handleInputEnterPressed = useCallback(async () => {
-		trySendMessage()
-	}, [trySendMessage])
+		handleSendMessage()
+	}, [handleSendMessage])
 
 	const handleInputKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key !== 'Enter') {
@@ -56,7 +56,7 @@ const InputArea = () => {
 			/>
 			<SendButton
 				className='ml-2'
-				onClick={trySendMessage}
+				onClick={handleSendMessage}
 				disabled={inputValue === ''}
 			/>
 		</div>
