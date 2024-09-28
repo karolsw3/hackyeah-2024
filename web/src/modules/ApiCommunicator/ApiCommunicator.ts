@@ -25,9 +25,9 @@ export type GetConversationHistoryResponse = {
 export type SendMessageProps = {
 	message: string;
 	conversationId?: string;
-	xmlString: string;
+	xmlString?: string;
 	// TODO: Fix file upload type
-	file: unknown;
+	file?: unknown;
 }
 
 export interface ApiCommunicator {

@@ -7,25 +7,25 @@ import {
 } from './ApiCommunicator.ts'
 
 const mockupSendMessageResponse: SendMessageResponse = {
-	conversationId: 'adfss',
-	message: 'asdjfskd'
+	conversationId: 'randomId',
+	message: 'Random message which you should display.'
 }
 
 const mockupEndConversationResponse: EndConversationResponse = {
-	xmlString: '',
-	xmlDownloadURL: ''
+	xmlString: '<xml></xml>',
+	xmlDownloadURL: 'https://google.com'
 }
 
 const mockupGetHistoriesResponse: GetHistoriesResponse = [{
-	label: '',
-	conversationId: ''
+	label: 'Test',
+	conversationId: 'randomId'
 }];
 
 const mockupGetConversationHistory: GetConversationHistoryResponse = {
 	messages: [
 		{
 			timestamp: 0,
-			message: ''
+			message: 'test'
 		}
 	]
 };
