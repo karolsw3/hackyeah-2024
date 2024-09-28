@@ -54,7 +54,7 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 					isMessageFirst && !isMessageLast && (isUser ? 'rounded-br-sm rounded-tr-3xl' : 'mt-2 rounded-bl-sm rounded-tl-3xl'),
 					isMessageLast && !isMessageFirst && (isUser ? 'rounded-tr-sm rounded-br-3xl mt-1' : 'rounded-tl-sm rounded-bl-3xl mt-1'),
 					!isMessageFirst && !isMessageLast && (isUser ? 'rounded-tr-sm rounded-br-sm mt-1' : 'rounded-tl-sm rounded-bl-sm mt-1'),
-					'duration-150'
+					'duration-150 sm:max-w-2xl max-w-[90%]'
 				)}
 			>
 				{ messageText }
