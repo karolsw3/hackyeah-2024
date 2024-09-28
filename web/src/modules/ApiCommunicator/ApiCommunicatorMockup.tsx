@@ -1,41 +1,33 @@
 import {
-	EndConversationResponse, GetConversationHistoryResponse,
-	GetHistoriesResponse,
 	ApiCommunicator,
+	GetConversationsResponse, IConversation,
+	MessageRole,
 	SendMessageProps,
-	SendMessageResponse
 } from './ApiCommunicator.ts'
 
-const mockupSendMessageResponse: SendMessageResponse = {
-	conversationId: 'randomId',
-	message: 'Random message which you should display.'
+const mockupCreateConversationResponse: IConversation = {
+	_id: 'fadsf',
+	messages: [],
+	userId: 'jadsfk'
 }
 
-const mockupEndConversationResponse: EndConversationResponse = {
-	xmlString: '<xml></xml>',
-	xmlDownloadURL: 'https://google.com'
-}
-
-const mockupGetHistoriesResponse: GetHistoriesResponse = [
-	{
-		label: 'Konwersacja',
-		conversationId: 'adlfjsdk'
-	},
-	{
-		label: 'Konwo #2',
-		conversationId: 'calsdfkjs'
-	},
-	{
-		label: 'TEst',
-		conversationId: 'ajsfoine'
-	},
-];
-
-const mockupGetConversationHistory: GetConversationHistoryResponse = {
-	messages: [
+const mockupGetConversationsResponse: GetConversationsResponse = {
+	conversations: [
 		{
-			timestamp: 0,
-			message: 'test'
+			_id: 'dupa',
+			messages: [
+				{
+					text: 'fajsdlf',
+					role: MessageRole.COMPLETION,
+					timestamp: 0,
+				},
+				{
+					text: 'kfasjldf',
+					role: MessageRole.USER,
+					timestamp: 1000,
+				}
+			],
+			userId: 'slfkjalkdfj'
 		}
 	]
 };
@@ -43,20 +35,18 @@ const mockupGetConversationHistory: GetConversationHistoryResponse = {
 export class ApiCommunicatorMockup implements ApiCommunicator {
 	sendMessage = async (props: SendMessageProps) => {
 		console.log(props)
-		return mockupSendMessageResponse;
+		return;
 	}
 
-	endConversation = async () => {
-		return mockupEndConversationResponse;
+	createUser = async () => {
+		return;
 	}
 
-	getHistories = async (sessionId: string) => {
-		console.log(sessionId)
-		return mockupGetHistoriesResponse;
+	createConversation = async () => {
+		return mockupCreateConversationResponse;
 	}
 
-	getConversationHistory = async (conversationId: string) => {
-		console.log(conversationId)
-		return mockupGetConversationHistory;
+	getConversations = async () => {
+		return mockupGetConversationsResponse;
 	}
 }

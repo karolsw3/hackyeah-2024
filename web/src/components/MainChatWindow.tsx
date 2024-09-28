@@ -1,19 +1,18 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import InputArea from './InputArea.tsx'
 import ConversationMessage from './ConversationMessage.tsx'
-import { useEffect } from 'react'
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 import classNames from 'classnames'
 import ConversationHeader from './ConversationHeader.tsx'
 
 const MainChatWindow: React.FC = () => {
+	const conversations = useApiCommunicatorStore((state) => state.conversations);
 	const currentlyOpenConversationId = useApiCommunicatorStore((state) => state.currentlyOpenConversationId);
-	const messages = useApiCommunicatorStore((state) => state.messages);
-	const fetchMessages = useApiCommunicatorStore((state) => state.fetchMessages);
-
-	useEffect(() => {
-		fetchMessages(currentlyOpenConversationId)
-	}, [fetchMessages, currentlyOpenConversationId])
+	const messages = useMemo(() => {
+		const currentConversation = conversations.find(conversation => conversation._id === currentlyOpenConversationId);
+		if (!currentConversation) return [];
+		return currentConversation.messages;
+	}, [conversations, currentlyOpenConversationId]);
 
 	return (
 		<div

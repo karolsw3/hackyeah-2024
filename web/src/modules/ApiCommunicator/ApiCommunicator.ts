@@ -1,26 +1,11 @@
-export type SendMessageResponse = {
-	conversationId?: string;
-	message: string;
-};
-
-export type EndConversationResponse = {
-	xmlString: string;
-	xmlDownloadURL: string;
-};
-
-export type GetHistoriesResponse = {
-	label: string;
-	conversationId: string;
-}[];
-
-export enum IMessageRole {
+export enum MessageRole {
 	USER = "USER",
 	COMPLETION = "COMPLETION",
 }
 
 export type IMessage = {
 	text: string;
-	role: IMessageRole;
+	role: MessageRole;
 	timestamp: number;
 };
 
@@ -39,10 +24,6 @@ export type ConversationMessage = {
 	message: string;
 }
 
-export type GetConversationHistoryResponse = {
-	messages: ConversationMessage[];
-}
-
 export type SendMessageProps = {
 	message: string;
 	conversationId?: string;
@@ -53,7 +34,7 @@ export type SendMessageProps = {
 
 export interface ApiCommunicator {
 	/* Conversations */
-	sendMessage: (props: SendMessageProps) => Promise<SendMessageResponse>;
+	sendMessage: (props: SendMessageProps) => Promise<void>;
 	getConversations: () => Promise<GetConversationsResponse>;
 	createConversation: () => Promise<IConversation>;
 	/* Users */

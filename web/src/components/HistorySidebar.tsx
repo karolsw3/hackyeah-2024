@@ -3,33 +3,33 @@ import { useEffect } from 'react'
 import classNames from 'classnames'
 
 const HistorySidebar = () => {
-	const fetchHistories = useApiCommunicatorStore((state) => state.fetchHistories);
+	const fetchConversations = useApiCommunicatorStore((state) => state.fetchConversations);
 	const currentlyOpenConversationId = useApiCommunicatorStore((state) => state.currentlyOpenConversationId);
 	const setCurrentlyOpenConversationId = useApiCommunicatorStore((state) => state.setCurrentlyOpenConversationId);
-	const histories = useApiCommunicatorStore((state) => state.histories);
+	const conversations = useApiCommunicatorStore((state) => state.conversations);
 
 	const handleClickHistoryEntry = (conversationId: string) => {
 		setCurrentlyOpenConversationId(conversationId);
 	}
 
 	useEffect(() => {
-		fetchHistories()
-	}, [fetchHistories])
+		fetchConversations()
+	}, [fetchConversations])
 	
 	return (
 		<div
 			className={'h-screen w-64 border-r border-neutral-300 py-2 bg-gov-light-gray shadow-md'}
 		>
-			{histories.map(historyEntry => (
+			{conversations.map(conversation => (
 				<button
 					className={classNames(
 						'w-full px-4 py-2',
 						'mb-2',
-						currentlyOpenConversationId === historyEntry.conversationId ? 'bg-gov-blue text-white':'hover:text-gov-blue'
+						currentlyOpenConversationId === conversation._id ? 'bg-gov-blue text-white':'hover:text-gov-blue'
 					)}
-					onClick={() => handleClickHistoryEntry(historyEntry.conversationId)}
+					onClick={() => handleClickHistoryEntry(conversation._id)}
 				>
-					{ historyEntry.label }
+					{ conversation._id }
 				</button>
 			))}
 		</div>

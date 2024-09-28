@@ -1,14 +1,16 @@
 import { create } from 'zustand'
-import type { ApiCommunicator, ConversationMessage, GetHistoriesResponse, SendMessageProps } from './ApiCommunicator.ts'
+import type {
+	ApiCommunicator,
+	IConversation,
+	SendMessageProps
+} from './ApiCommunicator.ts'
 import { ApiCommunicatorMockup } from './ApiCommunicatorMockup.tsx'
 
 type ApiCommunicatorState = {
 	currentlyOpenConversationId: string,
 	setCurrentlyOpenConversationId: (newConversationId: string) => void;
-	histories: GetHistoriesResponse;
-	messages: ConversationMessage[];
-	fetchMessages: (conversationId: string) => Promise<void>;
-	fetchHistories: () => Promise<void>;
+	conversations: IConversation[];
+	fetchConversations: () => Promise<void>;
 	sendMessage: (message: string) => Promise<void>;
 };
 
@@ -19,23 +21,15 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 	setCurrentlyOpenConversationId: (newConversationId: string) => {
 		set({ currentlyOpenConversationId: newConversationId })
 	},
-	histories: [],
-	messages: [],
-	fetchHistories: async () => {
-		const sessionId = 'sessionId'
-		const response = await apiCommunicator.getHistories(sessionId);
-		set({
-			histories: response
-		})
-		if (get().currentlyOpenConversationId === '' && response.length > 0) {
+	conversations: [],
+	fetchConversations: async () => {
+		const { conversations } = await apiCommunicator.getConversations();
+		set({ conversations })
+		if (get().currentlyOpenConversationId === '' && conversations.length > 0) {
 			set({
-				currentlyOpenConversationId: response[0].conversationId
+				currentlyOpenConversationId: conversations[0]._id
 			})
 		}
-	},
-	fetchMessages: async (conversationId: string) => {
-		const { messages } = await apiCommunicator.getConversationHistory(conversationId)
-		set({ messages })
 	},
 	sendMessage: async (message) => {
 		const payload: SendMessageProps = {
@@ -47,15 +41,5 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 		}
 
 		await apiCommunicator.sendMessage(payload)
-		const newConversationMessage: ConversationMessage = {
-			message,
-			timestamp: new Date().getTime(),
-		}
-		set({
-			messages: [
-				...get().messages,
-				newConversationMessage
-			]
-		})
 	}
 }))

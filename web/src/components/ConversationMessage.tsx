@@ -1,16 +1,16 @@
 import classNames from 'classnames';
-import type { ConversationMessage } from '../modules/ApiCommunicator/ApiCommunicator.ts'
+import type { ConversationMessage, IMessage } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 import { useMemo } from 'react'
 import { timestampToHHMM } from '../helpers/timestampToHHMM.ts'
 
-type ConversationMessageProps = ConversationMessage & {
+type ConversationMessageProps = IMessage & {
 	isMessageFirst: boolean;
 	isMessageLast: boolean;
 }
 
 const ConversationMessage = (props: ConversationMessageProps) => {
 	const {
-		message,
+		text,
 		timestamp,
 		isMessageFirst,
 		isMessageLast
@@ -42,7 +42,7 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 					!isMessageFirst && !isMessageLast && 'rounded-tr-sm rounded-br-sm mt-1',
 				)}
 			>
-				{ message }
+				{ text }
 			</div>
 		</div>
 	)
