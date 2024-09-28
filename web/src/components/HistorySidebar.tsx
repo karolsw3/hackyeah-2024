@@ -56,6 +56,11 @@ const HistorySidebar = () => {
 							'flex items-center justify-center mb-5'
 						)}
 					>
+						<img
+							src={'/icon.png'}
+							className={'w-5 mr-2'}
+							alt={'Favicon'}
+						/>
 						<b>TaxBot AI</b>
 					</div>
 					{conversations.map(conversation => (
