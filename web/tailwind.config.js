@@ -9,6 +9,7 @@ export default {
       colors: {
         "gov-red": '#d5233f',
         'gov-blue': '#0052a5',
+        'gov-light-blue': '#006cd7',
         'gov-light-gray': '#f1f1f1'
       }
     },

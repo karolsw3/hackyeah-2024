@@ -6,6 +6,7 @@ import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 const HistorySidebar = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+	const createNewConversation = useApiCommunicatorStore((state) => state.createConversation)
 	const fetchConversations = useApiCommunicatorStore((state) => state.fetchConversations);
 	const currentlyOpenConversationId = useApiCommunicatorStore((state) => state.currentlyOpenConversationId);
 	const setCurrentlyOpenConversationId = useApiCommunicatorStore((state) => state.setCurrentlyOpenConversationId);
@@ -76,6 +77,19 @@ const HistorySidebar = () => {
 							{ conversation._id }
 						</button>
 					))}
+					<div
+						className={'px-3'}
+					>
+						<button
+							onClick={createNewConversation}
+							className={classNames(
+								'mt-3 w-full py-2 px-4 border-2 border-gov-blue rounded',
+								'text-gov-blue font-bold hover:bg-gov-light-blue hover:border-gov-light-blue hover:text-white'
+							)}
+						>
+							New Conversation
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

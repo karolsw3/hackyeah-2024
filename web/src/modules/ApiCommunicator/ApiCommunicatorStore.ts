@@ -106,7 +106,7 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 	createConversation: async () => {
 		const conversation = await apiCommunicator.createConversation();
 		set(produce((state: ApiCommunicatorState) => {
-			state.conversations.push(conversation)
+			state.conversations.unshift(conversation)
 			state.currentlyOpenConversationId = conversation._id
 		}))
 	}
