@@ -18,14 +18,14 @@ const HistorySidebar = () => {
 	
 	return (
 		<div
-			className={'h-screen w-64 border-r border-neutral-300 px-2 py-2'}
+			className={'h-screen w-64 border-r border-neutral-300 py-2 bg-gov-light-gray'}
 		>
 			{histories.map(historyEntry => (
 				<button
 					className={classNames(
-						'w-full px-4 py-2 border border-gray-200 rounded-lg',
+						'w-full px-4 py-2',
 						'mb-2',
-						currentlyOpenConversationId === historyEntry.conversationId && 'bg-neutral-200'
+						currentlyOpenConversationId === historyEntry.conversationId ? 'bg-gov-blue text-white':'hover:text-gov-blue'
 					)}
 					onClick={() => handleClickHistoryEntry(historyEntry.conversationId)}
 				>
