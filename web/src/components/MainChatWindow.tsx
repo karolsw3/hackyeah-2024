@@ -16,20 +16,22 @@ const MainChatWindow: React.FC = () => {
 	return (
 		<div
 			className={classNames(
-				'h-screen flex flex-col'
+				'w-full h-screen flex flex-col'
 			)}
 		>
 			<div
-				className={'py-10 flex-1'}
+				className={'py-10 flex-1 overflow-y-scroll'}
 			>
-				{messages.map((message) => (
+				{ messages.map((message, index) => (
 					<ConversationMessage
-						key={`conversation-message-${message.timestamp}`}
-						{...message}
+						isMessageFirst={index === 0}
+						isMessageLast={index === messages.length - 1}
+						key={`conversation-message-${message.timestamp }`}
+						{ ...message }
 					/>
 				))}
 			</div>
-			<InputArea />
+			<InputArea/>
 		</div>
 	)
 }

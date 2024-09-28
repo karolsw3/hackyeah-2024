@@ -1,19 +1,32 @@
 import classNames from 'classnames';
 import type { ConversationMessage } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 
-const ConversationMessage = (props: ConversationMessage) => {
-	const { timestamp, message } = props;
+type ConversationMessageProps = ConversationMessage & {
+	isMessageFirst: boolean;
+	isMessageLast: boolean;
+}
+
+const ConversationMessage = (props: ConversationMessageProps) => {
+	const {
+		message,
+		isMessageFirst,
+		isMessageLast
+	} = props;
+
 	return (
 		<div
-			className={'w-full pt-1 px-4 flex items-center justify-end'}
+			className={'w-full px-4 flex items-center justify-end'}
 		>
 			<div
 				className={classNames(
-					'inline-flex items-center justify-end bg-blue-500 rounded-full px-4 py-2 text-white',
-					'text-right'
+					'inline-flex items-center justify-end bg-blue-500 px-4 py-2 text-white',
+					'text-right rounded-l-3xl',
+					isMessageFirst && 'rounded-br-sm rounded-tr-3xl',
+					isMessageLast && 'rounded-tr-sm rounded-br-3xl mt-1',
+					!isMessageFirst && !isMessageLast && 'rounded-tr-sm rounded-br-sm mt-1',
 				)}
 			>
-				{ message }
+				{ message } {isMessageFirst}
 			</div>
 		</div>
 	)
