@@ -1,6 +1,7 @@
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
+import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
 const HistorySidebar = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -34,7 +35,7 @@ const HistorySidebar = () => {
 					'hover:bg-gov-light-gray duration-75 active:bg-neutral-300'
 				)}
 			>
-				{ isSidebarOpen ? '>':'<' }
+				{ isSidebarOpen ? <FiChevronRight />:<FiChevronLeft /> }
 			</button>
 			<div
 				className={classNames(
