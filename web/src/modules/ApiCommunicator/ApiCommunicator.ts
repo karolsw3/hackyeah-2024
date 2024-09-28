@@ -1,28 +1,28 @@
-type SendMessageResponse = {
+export type SendMessageResponse = {
 	conversationId?: string;
 	message: string;
 };
 
-type EndConversationResponse = {
+export type EndConversationResponse = {
 	xmlString: string;
 	xmlDownloadURL: string;
 };
 
-type GetHistoriesResponse = {
+export type GetHistoriesResponse = {
 	label: string;
 	conversationId: string;
 }[];
 
-type ConversationMessage = {
+export type ConversationMessage = {
 	timestamp: number;
 	message: string;
 }
 
-type GetConversationHistoryResponse = {
+export type GetConversationHistoryResponse = {
 	messages: ConversationMessage[];
 }
 
-type SendMessageProps = {
+export type SendMessageProps = {
 	message: string;
 	conversationId?: string;
 	xmlString: string;
@@ -30,7 +30,7 @@ type SendMessageProps = {
 	file: unknown;
 }
 
-interface IApiCommunicator {
+export interface ApiCommunicator {
 	/* Conversations */
 	sendMessage: (props: SendMessageProps) => SendMessageResponse;
 	endConversation: () => EndConversationResponse;
