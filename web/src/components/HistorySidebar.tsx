@@ -18,7 +18,7 @@ const HistorySidebar = () => {
 	
 	return (
 		<div
-			className={'h-screen w-64 border-r border-neutral-300 py-2 bg-gov-light-gray'}
+			className={'h-screen w-64 border-r border-neutral-300 py-2 bg-gov-light-gray shadow-md'}
 		>
 			{histories.map(historyEntry => (
 				<button

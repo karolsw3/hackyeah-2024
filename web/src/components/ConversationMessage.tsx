@@ -36,8 +36,9 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 				className={classNames(
 					'inline-flex items-center justify-end bg-gov-blue px-4 py-2 text-white',
 					'text-right rounded-l-3xl',
-					isMessageFirst && 'rounded-br-sm rounded-tr-3xl',
-					isMessageLast && 'rounded-tr-sm rounded-br-3xl mt-1',
+					isMessageFirst && isMessageLast && 'rounded-3xl',
+					isMessageFirst && !isMessageLast && 'rounded-br-sm rounded-tr-3xl',
+					isMessageLast && !isMessageFirst && 'rounded-tr-sm rounded-br-3xl mt-1',
 					!isMessageFirst && !isMessageLast && 'rounded-tr-sm rounded-br-sm mt-1',
 				)}
 			>
