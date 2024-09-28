@@ -7,7 +7,7 @@ type ApiCommunicatorState = {
 	setCurrentlyOpenConversationId: (newConversationId: string) => void;
 	histories: GetHistoriesResponse;
 	messages: ConversationMessage[];
-	fetchMessages: (conversationId?: string) => Promise<void>;
+	fetchMessages: (conversationId: string) => Promise<void>;
 	fetchHistories: () => Promise<void>;
 	sendMessage: (message: string) => Promise<void>;
 };
@@ -33,9 +33,8 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 			})
 		}
 	},
-	fetchMessages: async (conversationId?: string) => {
-		const currentlyOpenConversationId = get().currentlyOpenConversationId;
-		const { messages } = await apiCommunicator.getConversationHistory(conversationId ?? currentlyOpenConversationId)
+	fetchMessages: async (conversationId: string) => {
+		const { messages } = await apiCommunicator.getConversationHistory(conversationId)
 		set({ messages })
 	},
 	sendMessage: async (message) => {

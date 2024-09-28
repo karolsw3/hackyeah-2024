@@ -16,10 +16,20 @@ const mockupEndConversationResponse: EndConversationResponse = {
 	xmlDownloadURL: 'https://google.com'
 }
 
-const mockupGetHistoriesResponse: GetHistoriesResponse = [{
-	label: 'Test',
-	conversationId: 'randomId'
-}];
+const mockupGetHistoriesResponse: GetHistoriesResponse = [
+	{
+		label: 'Konwersacja',
+		conversationId: 'adlfjsdk'
+	},
+	{
+		label: 'Konwo #2',
+		conversationId: 'calsdfkjs'
+	},
+	{
+		label: 'TEst',
+		conversationId: 'ajsfoine'
+	},
+];
 
 const mockupGetConversationHistory: GetConversationHistoryResponse = {
 	messages: [

@@ -7,7 +7,11 @@ const HistorySidebar = () => {
 	const currentlyOpenConversationId = useApiCommunicatorStore((state) => state.currentlyOpenConversationId);
 	const setCurrentlyOpenConversationId = useApiCommunicatorStore((state) => state.setCurrentlyOpenConversationId);
 	const histories = useApiCommunicatorStore((state) => state.histories);
-	
+
+	const handleClickHistoryEntry = (conversationId: string) => {
+		setCurrentlyOpenConversationId(conversationId);
+	}
+
 	useEffect(() => {
 		fetchHistories()
 	}, [fetchHistories])
@@ -20,10 +24,10 @@ const HistorySidebar = () => {
 				<button
 					className={classNames(
 						'w-full px-4 py-2 border border-gray-200 rounded-lg',
-						'mb-5',
+						'mb-2',
 						currentlyOpenConversationId === historyEntry.conversationId && 'bg-neutral-200'
 					)}
-					onChange={() => setCurrentlyOpenConversationId(historyEntry.conversationId)}
+					onClick={() => handleClickHistoryEntry(historyEntry.conversationId)}
 				>
 					{ historyEntry.label }
 				</button>
