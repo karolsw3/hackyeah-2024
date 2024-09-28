@@ -1,19 +1,19 @@
 import { model, ObjectId, Schema } from "mongoose";
 
-export enum IMessageRole {
+export enum MessageRole {
   USER = "USER",
   COMPLETION = "COMPLETION",
 }
 
 export interface IMessage {
   text: string;
-  role: IMessageRole;
+  role: MessageRole;
   timestamp: number;
 }
 
 export interface IConversation {
   _id: ObjectId;
-  messages: IMessageRole[];
+  messages: MessageRole[];
   userId: string;
 }
 
