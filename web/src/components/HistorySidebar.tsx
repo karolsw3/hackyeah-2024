@@ -36,12 +36,12 @@ const HistorySidebar = () => {
 					'hover:bg-gov-light-gray duration-75 active:bg-neutral-300'
 				)}
 			>
-				{ isSidebarOpen ? <FiChevronRight />:<FiChevronLeft /> }
+				{ isSidebarOpen ? <FiChevronLeft />:<FiChevronRight /> }
 			</button>
 			<div
 				className={classNames(
 					'relative overflow-hidden transition-all duration-100',
-					isSidebarOpen ? 'w-10' : 'w-64'
+					isSidebarOpen ? 'w-64' : 'w-10'
 				)}
 			>
 				<div
