@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { IMessage, MessageRole } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 import { useMemo } from 'react'
 import { timestampToHHMM } from '../helpers/timestampToHHMM.ts'
+import { parseServerMessage } from '../helpers/parseServerMessage.ts'
 
 type ConversationMessageProps = IMessage & {
 	isMessageFirst: boolean;
@@ -22,6 +23,11 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 	}, [timestamp])
 
 	const isUser = role === MessageRole.USER;
+	
+	const messageText = useMemo(() => {
+		if (isUser) return text;
+		return parseServerMessage(text);
+	}, [text, isUser])
 
 	return (
 		<div
@@ -44,14 +50,14 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 					'inline-flex items-center justify-end px-4 py-2',
 					isUser ? 'text-right' : 'text-left', // Adjust text alignment based on role
 					isUser ? 'rounded-l-3xl' : 'rounded-r-3xl', // Control the border rounding depending on role
-					isMessageFirst && isMessageLast && 'rounded-3xl',
-					isMessageFirst && !isMessageLast && (isUser ? 'rounded-br-sm rounded-tr-3xl' : 'rounded-bl-sm rounded-tl-3xl'),
+					isMessageFirst && isMessageLast && 'mt-2 rounded-3xl',
+					isMessageFirst && !isMessageLast && (isUser ? 'rounded-br-sm rounded-tr-3xl' : 'mt-2 rounded-bl-sm rounded-tl-3xl'),
 					isMessageLast && !isMessageFirst && (isUser ? 'rounded-tr-sm rounded-br-3xl mt-1' : 'rounded-tl-sm rounded-bl-3xl mt-1'),
 					!isMessageFirst && !isMessageLast && (isUser ? 'rounded-tr-sm rounded-br-sm mt-1' : 'rounded-tl-sm rounded-bl-sm mt-1'),
 					'duration-150'
 				)}
 			>
-				{ text }
+				{ messageText }
 			</div>
 		</div>
 	)
