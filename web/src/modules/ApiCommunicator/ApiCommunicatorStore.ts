@@ -36,6 +36,23 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 		}
 	},
 	sendMessage: async (message) => {
+		/* Add new message to store */
+		const currentlyOpenConversationId = get().currentlyOpenConversationId;
+		const conversations = get().conversations;
+		const currentConversationIndex = conversations.findIndex(conversation => conversation._id === currentlyOpenConversationId);
+		if (currentConversationIndex < 0) {
+			console.warn('Attempted to push to a non-existent conversation.')
+			return;
+		}
+		set(produce((state: ApiCommunicatorState) => {
+			state.conversations[currentConversationIndex].messages.push({
+				timestamp: new Date().getTime(),
+				text: message,
+				role: MessageRole.USER
+			})
+		}))
+
+		/* Send new message to API */
 		const payload: SendMessageProps = {
 			message
 		}
@@ -82,21 +99,6 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 				}));
 			}
 		}
-
-		const currentlyOpenConversationId = get().currentlyOpenConversationId;
-		const conversations = get().conversations;
-		const currentConversationIndex = conversations.findIndex(conversation => conversation._id === currentlyOpenConversationId);
-		if (currentConversationIndex < 0) {
-			console.warn('Attempted to push to a non-existent conversation.')
-			return;
-		}
-		set(produce((state: ApiCommunicatorState) => {
-			state.conversations[currentConversationIndex].messages.push({
-				timestamp: new Date().getTime(),
-				text: message,
-				role: MessageRole.USER
-			})
-		}))
 	},
 	createUser: async () => {
 		await apiCommunicator.createUser();

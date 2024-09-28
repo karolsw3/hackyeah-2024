@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import type { ConversationMessage, IMessage } from '../modules/ApiCommunicator/ApiCommunicator.ts'
+import classNames from 'classnames'
+import { IMessage, MessageRole } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 import { useMemo } from 'react'
 import { timestampToHHMM } from '../helpers/timestampToHHMM.ts'
 
@@ -11,6 +11,7 @@ type ConversationMessageProps = IMessage & {
 const ConversationMessage = (props: ConversationMessageProps) => {
 	const {
 		text,
+		role,
 		timestamp,
 		isMessageFirst,
 		isMessageLast
@@ -20,9 +21,14 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 		return timestampToHHMM(timestamp)
 	}, [timestamp])
 
+	const isUser = role === MessageRole.USER;
+
 	return (
 		<div
-			className={'w-full px-4 flex items-center justify-end group'}
+			className={classNames(
+				'w-full px-4 flex items-center group',
+				isUser ? 'justify-end':'justify-start'
+			)}
 		>
 			<div
 				className={classNames(
@@ -34,12 +40,15 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 			</div>
 			<div
 				className={classNames(
-					'inline-flex items-center justify-end bg-gov-blue px-4 py-2 text-white',
-					'text-right rounded-l-3xl duration-150',
+					isUser ? 'bg-gov-blue text-white' : 'bg-gov-light-gray text-neutral-800',
+					'inline-flex items-center justify-end px-4 py-2',
+					isUser ? 'text-right' : 'text-left', // Adjust text alignment based on role
+					isUser ? 'rounded-l-3xl' : 'rounded-r-3xl', // Control the border rounding depending on role
 					isMessageFirst && isMessageLast && 'rounded-3xl',
-					isMessageFirst && !isMessageLast && 'rounded-br-sm rounded-tr-3xl',
-					isMessageLast && !isMessageFirst && 'rounded-tr-sm rounded-br-3xl mt-1',
-					!isMessageFirst && !isMessageLast && 'rounded-tr-sm rounded-br-sm mt-1',
+					isMessageFirst && !isMessageLast && (isUser ? 'rounded-br-sm rounded-tr-3xl' : 'rounded-bl-sm rounded-tl-3xl'),
+					isMessageLast && !isMessageFirst && (isUser ? 'rounded-tr-sm rounded-br-3xl mt-1' : 'rounded-tl-sm rounded-bl-3xl mt-1'),
+					!isMessageFirst && !isMessageLast && (isUser ? 'rounded-tr-sm rounded-br-sm mt-1' : 'rounded-tl-sm rounded-bl-sm mt-1'),
+					'duration-150'
 				)}
 			>
 				{ text }

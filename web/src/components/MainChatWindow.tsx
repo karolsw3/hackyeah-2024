@@ -31,8 +31,8 @@ const MainChatWindow: React.FC = () => {
 			>
 				{ messages.map((message, index) => (
 					<ConversationMessage
-						isMessageFirst={index === 0}
-						isMessageLast={index === messages.length - 1}
+						isMessageFirst={index === 0 || messages[index - 1]?.role !== message.role}
+						isMessageLast={index === messages.length - 1 || messages[index - 1]?.role !== message.role}
 						key={`conversation-message-${message.timestamp}-${message.role}`}
 						{ ...message }
 					/>
