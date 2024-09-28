@@ -38,7 +38,7 @@ const MainChatWindow: React.FC = () => {
 					/>
 				))}
 			</div>
-			<InputArea/>
+			<InputArea />
 		</div>
 	)
 }

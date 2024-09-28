@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import jwt from "@elysiajs/jwt";
 import { v4 as uuidv4 } from 'uuid';
 import { Conversation } from "./models/Conversation.model";
+import cors from "@elysiajs/cors";
 import { generateTextToSpeech } from "./helpers/generateTextToSpeech";
 
 const startApp = async () => {
@@ -15,6 +16,7 @@ const startApp = async () => {
   })
   console.log('🍃 Connected to MongoDB')
   const app = new Elysia()
+    .use(cors())
     .use(swagger)
     .use(
       jwt({
@@ -30,25 +32,21 @@ const startApp = async () => {
         value: await jwt.sign({ userId: uuidv4() }),
         httpOnly: true,
         maxAge: 7 * 86400,
-        path: '/users',
       })
       set.status = 201
       return
     })
-    .post("/message", async function* ({ body, jwt, cookie: { auth }, error }) {
+    .post("/messages", async function* ({ body, jwt, cookie: { auth }, error }) {
       const jwtData = await jwt.verify(auth.value)
       if (!jwtData) {
-        error('Unauthorized', 401)
-        return
+        return error('Unauthorized', 401)
       }
       const conversation = await Conversation.findOne({ _id: body.conversationId })
       if (!conversation) {
-        error('Not Found', 404)
-        return
+        return error('Not Found', 404)
       }
       if (conversation.userId !== jwtData.userId) {
-        error('Unauthorized', 401)
-        return
+        return error('Unauthorized', 401)
       }
 
       const model = genAI.getGenerativeModel({
@@ -92,18 +90,22 @@ const startApp = async () => {
     .get("/conversations", async ({ jwt, cookie: { auth } }) => {
       const jwtData = await jwt.verify(auth.value)
       if (!jwtData) {
-        return []
+        return {
+          conversations: []
+        }
       }
       const conversations = await Conversation.find({ userId: jwtData.userId })
-      return conversations
+      return {
+        conversations: conversations.map(conversation => conversation.toJSON())
+      }
     })
-    .post("/conversation", async ({ jwt, cookie: { auth } }) => {
+    .post("/conversations", async ({ jwt, cookie: { auth }, error }) => {
       const jwtData = await jwt.verify(auth.value)
       if (!jwtData) {
-        return
+        return error('Unauthorized', 401)
       }
       const conversation = await Conversation.create({ userId: jwtData.userId })
-      return conversation
+      return conversation.toJSON()
     })
     .listen(Bun.env.PORT ?? 3000);
 
