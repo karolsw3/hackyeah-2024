@@ -25,9 +25,11 @@ const MainChatWindow: React.FC = () => {
 	}, [currentConversation]);
 
 	const pccXml = useMemo(() => {
-		const lastMessage = messages[messages.length - 1];
-		if (!lastMessage) return null;
-		return getDataFromServerMessage(lastMessage.text);
+		for (let i = messages.length - 1; i >= 0; i--) {
+			const dataString = getDataFromServerMessage(messages[i].text);
+			if (!dataString) continue;
+			return dataString;
+		}
 	}, [messages]);
 
 	const handleTitleChange = useCallback(async (newTitle: string) => {
