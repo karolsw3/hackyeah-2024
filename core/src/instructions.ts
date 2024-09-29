@@ -84,36 +84,36 @@ type Address = {
 
 type Person = {
   type: TaxPayerType.Person;
-  nip?: string;
-  pesel?: string;
-  firstName?: string;
-  lastName?: string;
-  dateOfBirth?: string; // format: YYYY-MM-DD
-  fatherName?: string;
-  motherName?: string;
+  nip: string;
+  pesel: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string; // format: YYYY-MM-DD
+  fatherName: string;
+  motherName: string;
 }
 
 type Company = {
   type: TaxPayerType.Company;
-  nip?: string;
-  fullName?: string;
-  shortName?: string;
+  nip: string;
+  fullName: string;
+  shortName: string;
 }
 
 type TaxPayer = Person | Company;
 
 type PCCDeclaration = {
-  declarationDate?: string; // format: YYYY-MM-DD
-  transactionDate?: string; // format: YYYY-MM-DD
-  taxOfficeCode?: string;
-  taxPayer?: TaxPayer;
-  address?: Address;
-  transactionType?: TransactionType;
-  transactionValue?: number;
-  taxAmount?: number;
-  transactionDescription?: string; // Brief description of the transaction, if it's a car puchase it should contain: Brand, Model, VIN, Registration number
+  declarationDate: string; // format: YYYY-MM-DD
+  transactionDate: string; // format: YYYY-MM-DD
+  taxOfficeCode: string;
+  taxPayer: TaxPayer;
+  address: Address;
+  transactionType: TransactionType;
+  transactionValue: number;
+  taxAmount: number;
+  transactionDescription: string; // Brief description of the transaction, if it's a car puchase it should contain: Brand, Model, VIN, Registration number
   objectLocation?: ObjectLocation;
-  transactionLocation?: ObjectLocation;
+  transactionLocation: ObjectLocation;
 }
 
 ## Question answering
