@@ -29,6 +29,8 @@ const InputArea = () => {
 		}
 		if (inputValue === '') {
 			setMessageRequiredIndicator(true)
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-expect-error
 			messageRequiredIndicatorTimeout.current = setTimeout(() => {
 				setMessageRequiredIndicator(false)
 			}, 2000)
