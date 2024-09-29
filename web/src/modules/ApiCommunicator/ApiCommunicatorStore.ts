@@ -7,13 +7,14 @@ import {
 	SendMessageProps
 } from './ApiCommunicator.ts'
 import { ApiCommunicatorReal } from './ApiCommunicatorReal.tsx';
+import { fileToBase64 } from '../../helpers/fileToBase64.ts'
 
 type ApiCommunicatorState = {
 	currentlyOpenConversationId: string,
 	setCurrentlyOpenConversationId: (newConversationId: string) => void;
 	conversations: IConversation[];
 	fetchConversations: () => Promise<void>;
-	sendMessage: (message: string) => Promise<void>;
+	sendMessage: (message: string, file?: File) => Promise<void>;
 	createUser: () => Promise<void>;
 	createConversation: () => Promise<void>;
 };
@@ -35,7 +36,7 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 			})
 		}
 	},
-	sendMessage: async (message) => {
+	sendMessage: async (message, file) => {
 		/* Add new message to store */
 		const currentlyOpenConversationId = get().currentlyOpenConversationId;
 		const conversations = get().conversations;
@@ -55,6 +56,11 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 		/* Send new message to API */
 		const payload: SendMessageProps = {
 			message
+		}
+		
+		if (file) {
+			payload.fileData = await fileToBase64(file);
+			payload.mimeType = file.type;
 		}
 	
 		if (get().currentlyOpenConversationId) {

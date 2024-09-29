@@ -3,12 +3,15 @@ import { useState } from 'react'
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 import classNames from 'classnames'
 import { SendButton } from './SendButton.tsx'
-import { FiPaperclip } from "react-icons/fi";
+import { FileUploadButton } from './FileUploadButton.tsx'
 
 const InputArea = () => {
 	useApiCommunicatorStore.getState()
 	const {
-		sendMessage, currentlyOpenConversationId, createUser, createConversation
+		sendMessage,
+		currentlyOpenConversationId,
+		createUser,
+		createConversation
 	} = useApiCommunicatorStore.getState();
 	const [inputValue, setInputValue] = useState('');
 
@@ -24,6 +27,19 @@ const InputArea = () => {
 			console.error(error)
 		}
 	}, [sendMessage, inputValue, currentlyOpenConversationId, createUser, createConversation])
+
+	const handleFileSelected = async (file: File) => {
+		try {
+			if (!currentlyOpenConversationId) {
+				await createUser()
+				await createConversation()
+			}
+			setInputValue('')
+			await sendMessage(inputValue, file)
+		} catch (error) {
+			console.error(error)
+		}
+	};
 
 	const handleInputEnterPressed = useCallback(async () => {
 		handleSendMessage()
@@ -60,21 +76,14 @@ const InputArea = () => {
 					)}
 					onKeyDown={handleInputKeyDown}
 				/>
-				<button
-					aria-label={'Upload file'}
-					className={ classNames(
-						'absolute right-0 mr-2 w-8 h-8 rounded-full',
-						'inline-flex items-center text-xl justify-center text-neutral-500',
-						'active:opacity-50 duration-75'
-					)}
-				>
-					<FiPaperclip/>
-				</button>
+				<FileUploadButton
+					onFileSelected={handleFileSelected}
+				/>
 			</div>
 			<SendButton
 				className='ml-2'
-				onClick={ handleSendMessage }
-				disabled={ inputValue === '' }
+				onClick={handleSendMessage}
+				disabled={inputValue === ''}
 			/>
 		</div>
 	);
