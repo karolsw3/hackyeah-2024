@@ -71,7 +71,7 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 			payload.conversationId = get().currentlyOpenConversationId;
 		}
 
-		const response = await fetch("https://hackyeah-2024.onrender.com/messages", {
+		const response = await fetch("http://localhost:8080/messages", {
 			method: 'POST',
 			signal: AbortSignal.timeout(30000),
 			credentials: 'include',

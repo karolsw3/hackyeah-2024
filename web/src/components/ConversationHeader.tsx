@@ -9,6 +9,7 @@ type ConversationHeaderProps = {
 	xml?: string | null;
 	onTitleChange?: (newTitle: string) => void;
 	isTitleChangeDisabled?: boolean;
+	isExportLoading?: boolean;
 }
 
 const ConversationHeader = (props: ConversationHeaderProps) => {
@@ -53,7 +54,8 @@ const ConversationHeader = (props: ConversationHeaderProps) => {
 						'hover:bg-gov-light-gray text-neutral-800 px-4 py-2',
 						'rounded-md border border-neutral-200',
 						'flex items-center justify-center space-x-2',
-						'hover:underline'
+						'hover:underline',
+						props.isExportLoading && 'opacity-50 pointer-events-none animate-pulse cursor-wait'
 					)}
 					target={'_blank'}
 					href={`data:text/xml;charset=utf-8,${encodeURIComponent(props.xml)}`}

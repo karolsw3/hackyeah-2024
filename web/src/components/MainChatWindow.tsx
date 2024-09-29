@@ -8,6 +8,7 @@ import { getDataFromServerMessage } from '../helpers/getDataFromServerMessage.ts
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import StarterBackground from '../assets/starter-background.png'
+import { LOADING_END_TAG, LOADING_START_TAG } from '../../../constants.ts'
 
 const MainChatWindow: React.FC = () => {
 	const { t } = useTranslation();
@@ -19,6 +20,12 @@ const MainChatWindow: React.FC = () => {
 		)
 	}, [apiCommunicatorState.currentlyOpenConversationId, apiCommunicatorState.conversations]);
 	const [isUpdateConversationLoading, setIsUpdateConversationLoading] = useState(false);
+
+	const isExportLoading = useMemo(() => {
+		const lastMessage = currentConversation?.messages[currentConversation.messages.length - 1];
+		if (!lastMessage) return false;
+		return lastMessage.text.includes(LOADING_START_TAG) && !lastMessage.text.includes(LOADING_END_TAG)
+	}, [currentConversation?.messages]);
 
 	const messages = useMemo(() => {
 		if (!currentConversation) return [];
@@ -59,6 +66,7 @@ const MainChatWindow: React.FC = () => {
 				xml={pccXml}
 				onTitleChange={handleTitleChange}
 				isTitleChangeDisabled={isUpdateConversationLoading}
+				isExportLoading={isExportLoading}
 			/>
 			<div
 				className={'py-10 flex-1 overflow-y-scroll flex flex-col-reverse gap-4'}

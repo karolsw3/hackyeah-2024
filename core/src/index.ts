@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { swagger } from '@elysiajs/swagger'
 import { getInstructions } from "./getInstructions";
-import { MESSAGE_END_TAG, DATA_START_TAG, DATA_END_TAG } from "../../constants";
+import { MESSAGE_END_TAG, DATA_START_TAG, DATA_END_TAG, LOADING_START_TAG, LOADING_END_TAG } from "../../constants";
 import { genAI } from "./helpers/genAI";
 import mongoose from "mongoose";
 import jwt from "@elysiajs/jwt";
@@ -81,7 +81,7 @@ const startApp = async () => {
         }
       
         const result = await model.generateContentStream({
-          systemInstruction: getInstructions({ currentDate: format(new Date(), 'YYYY-MM-DD') }),
+          systemInstruction: getInstructions({ currentDate: format(new Date(), 'yyyy-mm-dd') }),
           contents: [
             ...conversation.messages.map(message => ({
               role: message.role === MessageRole.USER ? "user" : "model",
@@ -111,6 +111,7 @@ const startApp = async () => {
         
         // Process data after message yielding is complete
         if (text.indexOf(DATA_START_TAG) && text.includes(MESSAGE_END_TAG)) {
+          yield LOADING_START_TAG;
           const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG));
           if (dataText.length > 0) {
             try {
@@ -123,6 +124,7 @@ const startApp = async () => {
               console.error('Error parsing data', error);
             }
           }
+          yield LOADING_END_TAG;
         }
 
         // Add the user message and the AI completion to the conversation

@@ -65,7 +65,7 @@ type TaxPayer = Person | Company;
 type PCCDeclaration = {
   declarationDate?: string; // format: YYYY-MM-DD
   transactionDate?: string; // format: YYYY-MM-DD
-  taxOfficeCode?: string;
+  taxOfficeName?: string;
   taxPayer?: TaxPayer;
   address?: Address;
   transactionType?: TransactionType;
@@ -104,7 +104,7 @@ export async function createPCCDeclarationXml(declaration: PCCDeclaration): Prom
           '#text': declaration.transactionDate,
           '@_poz': 'P_4',
         },
-        KodUrzedu: declaration.taxOfficeCode,
+        KodUrzedu: '1208',
       },
       Podmiot1: {
         '@_rola': 'Podatnik',
