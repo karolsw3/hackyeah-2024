@@ -59,6 +59,7 @@ const ConversationHeader = (props: ConversationHeaderProps) => {
 					)}
 					target={'_blank'}
 					href={`data:text/xml;charset=utf-8,${encodeURIComponent(props.xml)}`}
+					download="pcc3.xml"
 				>
 					<span>
 						{t("Eksportuj plik XML")}
