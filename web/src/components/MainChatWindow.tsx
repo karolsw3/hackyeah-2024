@@ -1,18 +1,21 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import InputArea from './InputArea.tsx'
 import ConversationMessage from './ConversationMessage.tsx'
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 import classNames from 'classnames'
 import ConversationHeader from './ConversationHeader.tsx'
-import { IConversation } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 import { getDataFromServerMessage } from '../helpers/getDataFromServerMessage.ts'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const MainChatWindow: React.FC = () => {
-	const currentlyOpenConversationId = useApiCommunicatorStore((state) => state.currentlyOpenConversationId);
-	const currentConversation = useApiCommunicatorStore((state) => {
-			return state.conversations.find((conversation: IConversation) => conversation._id === state.currentlyOpenConversationId)
-	});
+	const apiCommunicatorState = useApiCommunicatorStore()
+	const updateConversation = apiCommunicatorState.updateConversation;
+	const currentConversation = useMemo(() => {
+		return apiCommunicatorState.conversations.find(
+			conversation => conversation._id === apiCommunicatorState.currentlyOpenConversationId
+		)
+	}, [apiCommunicatorState.currentlyOpenConversationId, apiCommunicatorState.conversations]);
+	const [isUpdateConversationLoading, setIsUpdateConversationLoading] = useState(false);
 
 	const messages = useMemo(() => {
 		if (!currentConversation) return [];
@@ -25,6 +28,21 @@ const MainChatWindow: React.FC = () => {
 		return getDataFromServerMessage(lastMessage.text);
 	}, [messages]);
 
+	const handleTitleChange = useCallback(async (newTitle: string) => {
+		if (!currentConversation) return;
+		setIsUpdateConversationLoading(true);
+		await updateConversation({
+			conversationId: currentConversation._id,
+			label: newTitle
+		});
+		setIsUpdateConversationLoading(false);
+	}, [currentConversation, updateConversation]);
+
+	const currentConversationLabel = useMemo(() => {
+		if (!currentConversation) return '-';
+		return currentConversation.label ?? 'Konwersacja';
+	}, [currentConversation]);
+
 	return (
 		<div
 			className={classNames(
@@ -32,11 +50,13 @@ const MainChatWindow: React.FC = () => {
 			)}
 		>
 			<ConversationHeader
-				title={currentlyOpenConversationId}
+				title={currentConversationLabel}
 				xml={pccXml}
+				onTitleChange={handleTitleChange}
+				isTitleChangeDisabled={isUpdateConversationLoading}
 			/>
 			<div
-				className={'py-10 flex-1 overflow-y-scroll flex flex-col-reverse'}
+				className={'py-10 flex-1 overflow-y-scroll flex flex-col-reverse gap-4'}
 			>
       	<AnimatePresence initial={true} mode='popLayout'>
 					{[...messages].reverse().map((message, index) => (
@@ -50,9 +70,7 @@ const MainChatWindow: React.FC = () => {
 							key={`conversation-message-${message.timestamp}-${message.role}`}
 						>
 							<ConversationMessage
-								isMessageFirst={index === 0 || messages[index - 1]?.role !== message.role}
-								isMessageLast={index === messages.length - 1 || messages[index - 1]?.role !== message.role}
-								{ ...message }
+								{...message}
 							/>
 						</motion.div>
 					))}

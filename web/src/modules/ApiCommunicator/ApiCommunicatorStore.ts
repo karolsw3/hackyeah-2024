@@ -4,7 +4,8 @@ import {
 	ApiCommunicator,
 	IConversation,
 	MessageRole,
-	SendMessageProps
+	SendMessageProps,
+	UpdateConversationParams
 } from './ApiCommunicator.ts'
 import { ApiCommunicatorReal } from './ApiCommunicatorReal.tsx';
 import { fileToBase64URL } from '../../helpers/fileToBase64URL.ts'
@@ -18,6 +19,7 @@ type ApiCommunicatorState = {
 	sendMessage: (message: string, file?: File) => Promise<void>;
 	createUser: () => Promise<void>;
 	createConversation: () => Promise<void>;
+	updateConversation: (params: UpdateConversationParams) => Promise<void>;
 };
 
 export const apiCommunicator: ApiCommunicator = new ApiCommunicatorReal();
@@ -116,6 +118,17 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 		set(produce((state: ApiCommunicatorState) => {
 			state.conversations.unshift(conversation)
 			state.currentlyOpenConversationId = conversation._id
+		}))
+	},
+	updateConversation: async (params: UpdateConversationParams) => {
+		const conversation = await apiCommunicator.updateConversation(params);
+		set(produce((state: ApiCommunicatorState) => {
+			const conversationIndex = state.conversations.findIndex(conversation => conversation._id === params.conversationId);
+			if (conversationIndex < 0) {
+				console.warn('Attempted to update a non-existent conversation.')
+				return;
+			}
+			state.conversations[conversationIndex] = conversation;
 		}))
 	}
 }))

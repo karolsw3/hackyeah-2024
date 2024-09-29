@@ -13,6 +13,7 @@ export type IMessage = {
 
 export type IConversation = {
 	_id: string;
+	label?: string;
 	messages: IMessage[];
 	userId: string;
 };
@@ -34,11 +35,17 @@ export type SendMessageProps = {
 	mimeType?: string;
 }
 
+export type UpdateConversationParams = {
+	conversationId: string;
+	label: string;
+}
+
 export interface ApiCommunicator {
 	/* Conversations */
 	sendMessage: (props: SendMessageProps) => Promise<AxiosResponse>;
 	getConversations: () => Promise<GetConversationsResponse>;
 	createConversation: () => Promise<IConversation>;
+	updateConversation: (params: UpdateConversationParams) => Promise<IConversation>;
 	/* Users */
 	createUser: () => Promise<void>;
 }

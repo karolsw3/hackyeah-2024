@@ -5,6 +5,7 @@ import {
 	GetConversationsResponse,
 	IConversation,
 	SendMessageProps,
+	UpdateConversationParams,
 } from './ApiCommunicator.ts'
 
 export class ApiCommunicatorReal implements ApiCommunicator {
@@ -27,5 +28,10 @@ export class ApiCommunicatorReal implements ApiCommunicator {
 	getConversations = async () => {
 		const conversations = await coreClient.get<null, AxiosResponse<GetConversationsResponse>>('/conversations');
 		return conversations.data;
+	}
+
+	updateConversation = async (params: UpdateConversationParams) => {
+		const conversation = await coreClient.post<UpdateConversationParams, AxiosResponse<IConversation>>(`/conversations/${params.conversationId}`, params);
+		return conversation.data;
 	}
 }

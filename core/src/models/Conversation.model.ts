@@ -13,11 +13,15 @@ export interface IMessage {
 
 export interface IConversation {
   _id: ObjectId;
+  label?: string;
   messages: IMessage[];
   userId: string;
 }
 
 const conversationSchema = new Schema<IConversation>({
+  label: {
+    type: String,
+  },
   messages: {
     type: [Object],
     required: true,

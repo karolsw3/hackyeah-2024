@@ -5,18 +5,13 @@ import { timestampToHHMM } from '../helpers/timestampToHHMM.ts'
 import { parseServerMessage } from '../helpers/parseServerMessage.ts'
 import ReactMarkdown from 'react-markdown'
 
-type ConversationMessageProps = IMessage & {
-	isMessageFirst: boolean;
-	isMessageLast: boolean;
-}
+type ConversationMessageProps = IMessage
 
 const ConversationMessage = (props: ConversationMessageProps) => {
 	const {
 		text,
 		role,
-		timestamp,
-		isMessageFirst,
-		isMessageLast
+		timestamp
 	} = props;
 	
 	const dateFromTimestamp = useMemo(() => {
@@ -33,14 +28,14 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 	return (
 		<div
 			className={classNames(
-				'w-full px-4 flex items-center group',
-				isUser ? 'justify-end':'justify-start'
+				'w-full px-4 flex items-center group justify-end gap-3',
+				!isUser && 'flex-row-reverse',
 			)}
 		>
 			<div
 				className={classNames(
 					'text-sm text-neutral-400 group-hover:opacity-100',
-					'opacity-0 duration-75 mr-2 -mb-1'
+					'opacity-0 duration-75'
 				)}
 			>
 				{ dateFromTimestamp }
@@ -48,13 +43,7 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 			<div
 				className={classNames(
 					isUser ? 'bg-gov-blue text-white' : 'bg-gov-light-gray text-neutral-800',
-					'px-4 py-2',
-					isUser ? 'text-right' : 'text-left', // Adjust text alignment based on role
-					isUser ? 'rounded-l-3xl' : 'rounded-r-3xl', // Control the border rounding depending on role
-					isMessageFirst && isMessageLast && 'mt-2 rounded-3xl',
-					isMessageFirst && !isMessageLast && (isUser ? 'rounded-br-sm rounded-tr-3xl' : 'mt-2 rounded-bl-sm rounded-tl-3xl'),
-					isMessageLast && !isMessageFirst && (isUser ? 'rounded-tr-sm rounded-br-3xl mt-1' : 'rounded-tl-sm rounded-bl-3xl mt-1'),
-					!isMessageFirst && !isMessageLast && (isUser ? 'rounded-tr-sm rounded-br-sm mt-1' : 'rounded-tl-sm rounded-bl-sm mt-1'),
+					'px-4 py-2 rounded-3xl text-left',
 					'duration-150 sm:max-w-2xl max-w-[90%]'
 				)}
 			>

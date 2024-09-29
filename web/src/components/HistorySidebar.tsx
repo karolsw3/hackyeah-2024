@@ -74,7 +74,7 @@ const HistorySidebar = () => {
 							)}
 							onClick={() => handleClickHistoryEntry(conversation._id)}
 						>
-							{ conversation._id }
+							{conversation.label || 'Konwersacja'}
 						</button>
 					))}
 					<div
@@ -87,7 +87,7 @@ const HistorySidebar = () => {
 								'text-gov-blue font-bold hover:bg-gov-light-blue hover:border-gov-light-blue hover:text-white'
 							)}
 						>
-							Nowa Konwersacja
+							Nowa konwersacja
 						</button>
 					</div>
 				</div>

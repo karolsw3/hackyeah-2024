@@ -161,6 +161,29 @@ const startApp = async () => {
       const conversation = await Conversation.create({ userId: jwtData.userId })
       return conversation.toJSON()
     })
+    .post("/conversations/:conversationId", async ({ jwt, cookie: { auth }, body, params, error }) => {
+      const jwtData = await jwt.verify(auth.value)
+      if (!jwtData) {
+        return error('Unauthorized', 401)
+      }
+      const conversation = await Conversation.findOne({ _id: params.conversationId })
+      if (!conversation) {
+        return error('Not Found', 404)
+      }
+      if (conversation.userId !== jwtData.userId) {
+        return error('Unauthorized', 401)
+      }
+      conversation.label = body.label
+      await conversation.save()
+      return conversation.toJSON()
+    }, {
+      params: t.Object({
+        conversationId: t.String()
+      }),
+      body: t.Object({
+        label: t.String()
+      })
+    })
     .listen(Bun.env.PORT ?? 3000);
 
   console.log(
