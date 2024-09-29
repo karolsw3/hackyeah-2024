@@ -8,7 +8,7 @@ const TAX_RATE_BY_TYPE: Record<PccTaxDeclarationType, number> = {
   [PccTaxDeclarationType.MONEY_LENDING]: 0.005,
 }
 
-export const getFinalPccDeclarationJson = ({
+export const getPccTaxDeclarationJson = ({
   agreementDate,
   taxOfficeNumber,
   taxPayer,
