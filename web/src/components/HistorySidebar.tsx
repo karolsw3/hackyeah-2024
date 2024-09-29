@@ -29,7 +29,7 @@ const HistorySidebar = () => {
 	
 	return (
 		<div
-			className={'relative'}
+			className={'hidden sm:flex relative'}
 		>
 			<button
 				aria-checked={isSidebarOpen}
@@ -68,12 +68,19 @@ const HistorySidebar = () => {
 					>
 						<img
 							src={'/icon.png'}
-							className={'w-5 mr-2'}
-							alt={'Favicon'}
+							className={'w-6 mr-2'}
+							alt={'TaxBot AI logo'}
 						/>
-						<b>TaxBot AI</b>
+						<a
+							href={'/'}
+							className={'text-lg hover:underline'}
+						>
+							<b>
+								TaxBot AI
+							</b>
+						</a>
 					</div>
-					{conversations.map(conversation => (
+					{ conversations.map(conversation => (
 						<button
 							className={classNames(
 								'w-full px-4 py-2',

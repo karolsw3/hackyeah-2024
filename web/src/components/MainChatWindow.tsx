@@ -7,6 +7,7 @@ import ConversationHeader from './ConversationHeader.tsx'
 import { getDataFromServerMessage } from '../helpers/getDataFromServerMessage.ts'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import StarterBackground from '../assets/starter-background.png'
 
 const MainChatWindow: React.FC = () => {
 	const { t } = useTranslation();
@@ -64,40 +65,48 @@ const MainChatWindow: React.FC = () => {
 			>
 				{messages.length === 0 && (
 					<div
-						className={ 'px-4' }
+						className={'px-4'}
 					>
 						<div
 							className={ classNames(
 								'mb-5 mx-auto border border-gov-light-gray',
-								'rounded-2xl w-full max-w-4xl p-4 text-left text-neutral-500 shadow-sm'
-							)}
+								'rounded-2xl w-full max-w-4xl text-left text-neutral-500 shadow'
+							) }
 						>
-							<p>{t("Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi")}.</p>
-							<p>{t("Rozpocznij konwersację wpisując polecenie na dole strony")}.</p>
-							<br/>
-							<p>{t("Możesz")}:</p>
-							<ul>
-								<li
-									className={'mt-1'}
-								>
-									– {t("Wysłać mi zdjęcie swojej umowy kupna-sprzedaży, bym pomógł Ci z deklaracją PCC")}
-								</li>
-								<li
-									className={'mt-1'}
-								>
-									– {t("Zapytać mnie o dowolny askpekt deklaracji")}
-								</li>
-								<li
-									className={'mt-1'}
-								>
-									– {t("Powiedzieć mi czego szukasz, a na pewno znajdę dla Ciebie odpowiednie rozwiązanie :)")}
-								</li>
-							</ul>
+							<img
+								src={ StarterBackground }
+								className={'object-cover rounded-t-2xl h-64 w-full'}
+							/>
+							<div
+								className={'py-8 px-6'}
+							>
+								<p>{ t("Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi") }.</p>
+								<p>{ t("Rozpocznij konwersację wpisując polecenie na dole strony") }.</p>
+								<br/>
+								<p>{ t("Możesz") }:</p>
+								<ul>
+									<li
+										className={ 'mt-1' }
+									>
+										– { t("Wysłać mi zdjęcie swojej umowy kupna-sprzedaży, bym pomógł Ci z deklaracją PCC") }
+									</li>
+									<li
+										className={ 'mt-1' }
+									>
+										– { t("Zapytać mnie o dowolny askpekt deklaracji") }
+									</li>
+									<li
+										className={ 'mt-1' }
+									>
+										– { t("Powiedzieć mi czego szukasz, a na pewno znajdę dla Ciebie odpowiednie rozwiązanie :)") }
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				) }
 				<AnimatePresence initial={ true } mode="popLayout">
-					{[...messages].reverse().map((message, index) => (
+					{ [...messages].reverse().map((message, index) => (
 						<motion.div
 							initial={ { opacity: 0, scale: 0.9 } }
 							animate={ { opacity: 1, scale: 1 } }
@@ -111,7 +120,7 @@ const MainChatWindow: React.FC = () => {
 								{ ...message }
 							/>
 						</motion.div>
-					))}
+					)) }
 				</AnimatePresence>
 			</div>
 			<InputArea/>
