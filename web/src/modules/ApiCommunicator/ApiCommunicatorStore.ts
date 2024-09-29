@@ -7,7 +7,8 @@ import {
 	SendMessageProps
 } from './ApiCommunicator.ts'
 import { ApiCommunicatorReal } from './ApiCommunicatorReal.tsx';
-import { fileToBase64 } from '../../helpers/fileToBase64.ts'
+import { fileToBase64URL } from '../../helpers/fileToBase64URL.ts'
+import { base64URLtoBase64 } from '../../helpers/base64URLtoBase64.ts'
 
 type ApiCommunicatorState = {
 	currentlyOpenConversationId: string,
@@ -59,7 +60,8 @@ export const useApiCommunicatorStore = create<ApiCommunicatorState>((set, get) =
 		}
 		
 		if (file) {
-			payload.fileData = await fileToBase64(file);
+			const base64URL = await fileToBase64URL(file);
+			payload.fileData = base64URLtoBase64(base64URL);
 			payload.mimeType = file.type;
 		}
 	
