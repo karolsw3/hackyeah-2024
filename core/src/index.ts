@@ -6,7 +6,7 @@ import { genAI } from "./helpers/genAI";
 import mongoose from "mongoose";
 import jwt from "@elysiajs/jwt";
 import { v4 as uuidv4 } from 'uuid';
-import { Conversation } from "./models/Conversation.model";
+import { Conversation, MessageRole } from "./models/Conversation.model";
 import cors from "@elysiajs/cors";
 import { generateTextToSpeech } from "./helpers/generateTextToSpeech";
 
@@ -57,14 +57,21 @@ const startApp = async () => {
         temperature: 0.3,
         topP: 0.95,
         topK: 40,
-        maxOutputTokens: 8192,
+        maxOutputTokens: 2048,
         responseMimeType: "text/plain",
       };
       const chatSession = model.startChat({
         generationConfig,
-        history: [
-        ],
+        history: conversation.messages.map(message => ({
+          role: message.role === MessageRole.USER ? "user" : "model",
+          parts: [{ text: message.text }],
+        })),
       });
+      conversation.messages.push({
+        role: MessageRole.USER,
+        text: body.message,
+        timestamp: Date.now()
+      })
     
       const result = await chatSession.sendMessageStream(body.message);
 
@@ -74,6 +81,12 @@ const startApp = async () => {
         text += textChunk;
         yield textChunk;
       }
+      conversation.messages.push({
+        role: MessageRole.COMPLETION,
+        text,
+        timestamp: Date.now()
+      })
+      await conversation.save()
       const messageStartTagIndex = text.indexOf(MESSAGE_START_TAG)
       const messageEndTagIndex = text.indexOf(MESSAGE_END_TAG)
       const message = text.slice(messageStartTagIndex + MESSAGE_START_TAG.length, messageEndTagIndex)

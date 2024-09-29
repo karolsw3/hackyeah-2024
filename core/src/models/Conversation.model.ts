@@ -13,7 +13,7 @@ export interface IMessage {
 
 export interface IConversation {
   _id: ObjectId;
-  messages: MessageRole[];
+  messages: IMessage[];
   userId: string;
 }
 
