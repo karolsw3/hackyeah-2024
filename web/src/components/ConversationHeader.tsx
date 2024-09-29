@@ -20,13 +20,12 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 	return (
 		<div
 			className={classNames(
-				'w-full px-6 py-3 flex items-center justify-end',
+				'w-full pl-6 pr-4 py-3 flex items-center justify-end',
 				'border-b border-neutral-200 text-neutral-800',
-				'flex items-center justify-between h-16'
+				'flex items-center justify-between h-16 z-20 bg-white'
 			)}
 		>
-			<div className='flex items-center gap-1'>
-				<LuClipboardEdit size={16} className='text-neutral-600' />
+			<div className='flex items-center gap-2'>
 				<span
 					role="textbox"
 					contentEditable
@@ -44,6 +43,7 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 				>
 					{title}
 				</span>
+				<LuClipboardEdit size={16} className='text-neutral-400' />
 			</div>
 			{props.xml && (
 				<a

@@ -29,8 +29,8 @@ const HistorySidebar = () => {
 				aria-label={'Open/Close Sidebar'}
 				onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 				className={classNames(
-					'absolute top-0 right-0 -mr-4 mt-[8px]',
-					'w-8 h-8 bg-white z-20 shadow-xs',
+					'absolute top-0 right-0 -mr-4 mt-[16px]',
+					'w-8 h-8 bg-white shadow-xs z-30',
 					'border border-neutral-300 rounded-full',
 					'flex items-center justify-center',
 					'hover:bg-gov-light-gray duration-75 active:bg-neutral-300'
@@ -53,8 +53,8 @@ const HistorySidebar = () => {
 				>
 					<div
 						className={classNames(
-							'w-full px-4 py-3 flex items-center justify-end',
-							'border-b border-neutral-200 text-neutral-800',
+							'w-full h-[64px] px-4 py-3 flex items-center justify-end',
+							'border-b border-neutral-300 text-neutral-800',
 							'flex items-center justify-center mb-5'
 						)}
 					>
