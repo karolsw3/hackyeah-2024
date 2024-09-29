@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FiPaperclip } from 'react-icons/fi'
 import classNames from 'classnames'
 
 interface FileUploaderProps {
 	onFileSelected: (file: File) => void;
+	file: File | null;
 }
 
-export const FileUploadButton: React.FC<FileUploaderProps> = ({ onFileSelected }) => {
+export const FileUploadButton: React.FC<FileUploaderProps> = ({ onFileSelected, file }) => {
 	const hiddenFileInput = useRef<HTMLInputElement>(null);
 	
 	const handleClick = () => {
@@ -19,6 +20,17 @@ export const FileUploadButton: React.FC<FileUploaderProps> = ({ onFileSelected }
 			onFileSelected(fileUploaded);
 		}
 	};
+
+	useEffect(() => {
+		if (!hiddenFileInput.current) return
+		if (!file) {
+			hiddenFileInput.current.value = '';
+			return;
+		}
+		const dataTransfer = new DataTransfer();
+		dataTransfer.items.add(file);
+		hiddenFileInput.current.files = dataTransfer.files;
+	}, [file]);
 	
 	return (
 		<>
