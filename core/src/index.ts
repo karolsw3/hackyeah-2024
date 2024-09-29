@@ -162,7 +162,6 @@ const startApp = async () => {
           ...conversation.toJSON(),
           messages: modifiedMessages
         })
-        console.log(modifiedConversations)
       }
       return {
         conversations: modifiedConversations
