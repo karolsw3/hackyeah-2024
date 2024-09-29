@@ -70,34 +70,34 @@ const MainChatWindow: React.FC = () => {
 							className={ classNames(
 								'mb-5 mx-auto border border-gov-light-gray',
 								'rounded-2xl w-full max-w-4xl p-4 text-left text-neutral-500 shadow-sm'
-							) }
+							)}
 						>
-							<p>Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi.</p>
-							<p>Rozpocznij konwersację wpisując polecenie na dole strony.</p>
+							<p>{t("Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi")}.</p>
+							<p>{t("Rozpocznij konwersację wpisując polecenie na dole strony")}.</p>
 							<br/>
-							<p>Możesz:</p>
+							<p>{t("Możesz")}:</p>
 							<ul>
 								<li
-									className={ 'mt-1' }
+									className={'mt-1'}
 								>
-									- Wysłać mi zdjęcie swojej umowy kupna-sprzedaży, bym pomógł Ci z deklaracją PCC
+									– {t("Wysłać mi zdjęcie swojej umowy kupna-sprzedaży, bym pomógł Ci z deklaracją PCC")}
 								</li>
 								<li
-									className={ 'mt-1' }
+									className={'mt-1'}
 								>
-									- Zapytać mnie o dowolny askpekt deklaracji
+									– {t("Zapytać mnie o dowolny askpekt deklaracji")}
 								</li>
 								<li
-									className={ 'mt-1' }
+									className={'mt-1'}
 								>
-									- Powiedzieć mi czego szukasz, a na pewno znajdę dla Ciebie odpowiednie rozwiązanie :)
+									– {t("Powiedzieć mi czego szukasz, a na pewno znajdę dla Ciebie odpowiednie rozwiązanie :)")}
 								</li>
 							</ul>
 						</div>
 					</div>
 				) }
 				<AnimatePresence initial={ true } mode="popLayout">
-					{ [...messages].reverse().map((message, index) => (
+					{[...messages].reverse().map((message, index) => (
 						<motion.div
 							initial={ { opacity: 0, scale: 0.9 } }
 							animate={ { opacity: 1, scale: 1 } }
@@ -111,7 +111,7 @@ const MainChatWindow: React.FC = () => {
 								{ ...message }
 							/>
 						</motion.div>
-					)) }
+					))}
 				</AnimatePresence>
 			</div>
 			<InputArea/>
