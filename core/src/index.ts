@@ -90,22 +90,17 @@ const startApp = async () => {
       })
 
       let text = '';
-      let stopYieldingMessage = false;
+      let yieldedText = '';
       for await (const message of result.stream) {
         const textChunk = message.text();
         text += textChunk;
-
-        if (!stopYieldingMessage) {
-          // Stop yielding text chunks at end tag, find index of end tag
-          const endTagIndex = textChunk.indexOf(MESSAGE_END_TAG);
-          if (endTagIndex !== -1) {
-            // Yield the text up to the end tag
-            yield text.slice(0, endTagIndex + MESSAGE_END_TAG.length);
-            stopYieldingMessage = true;
-          }
-
-          yield textChunk;
+        // Stop yielding at printed message end tag
+        if (yieldedText.includes(MESSAGE_END_TAG)) continue;
+        if (text.includes(MESSAGE_END_TAG) && !yieldedText.includes(MESSAGE_END_TAG)) {
+          yield textChunk.slice(0, textChunk.indexOf(MESSAGE_END_TAG) + MESSAGE_END_TAG.length);
         }
+        yield textChunk;
+        yieldedText += textChunk;
       }
       const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG))
       if (dataText.length > 0) {

@@ -3,6 +3,7 @@ import { IMessage, MessageRole } from '../modules/ApiCommunicator/ApiCommunicato
 import { useMemo } from 'react'
 import { timestampToHHMM } from '../helpers/timestampToHHMM.ts'
 import { parseServerMessage } from '../helpers/parseServerMessage.ts'
+import ReactMarkdown from 'react-markdown'
 
 type ConversationMessageProps = IMessage & {
 	isMessageFirst: boolean;
@@ -47,7 +48,7 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 			<div
 				className={classNames(
 					isUser ? 'bg-gov-blue text-white' : 'bg-gov-light-gray text-neutral-800',
-					'inline-flex items-center justify-end px-4 py-2',
+					'px-4 py-2',
 					isUser ? 'text-right' : 'text-left', // Adjust text alignment based on role
 					isUser ? 'rounded-l-3xl' : 'rounded-r-3xl', // Control the border rounding depending on role
 					isMessageFirst && isMessageLast && 'mt-2 rounded-3xl',
@@ -57,7 +58,9 @@ const ConversationMessage = (props: ConversationMessageProps) => {
 					'duration-150 sm:max-w-2xl max-w-[90%]'
 				)}
 			>
-				{ messageText }
+				<ReactMarkdown>
+					{ messageText }
+				</ReactMarkdown>
 			</div>
 		</div>
 	)
