@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 import { swagger } from '@elysiajs/swagger'
-import { instructions } from "./instructions";
+import { getInstructions } from "./getInstructions";
 import { MESSAGE_END_TAG, DATA_START_TAG, DATA_END_TAG } from "../../constants";
 import { genAI } from "./helpers/genAI";
 import mongoose from "mongoose";
@@ -11,6 +11,7 @@ import cors from "@elysiajs/cors";
 import { Content } from "@google/generative-ai";
 import { createPCCDeclarationXml } from "./helpers/createPCCDeclarationXml";
 import { getMessagesWithXml } from "./helpers/getMessagesWithXml";
+import { format } from "date-fns";
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-pro-002",
@@ -80,7 +81,7 @@ const startApp = async () => {
         }
       
         const result = await model.generateContentStream({
-          systemInstruction: instructions,
+          systemInstruction: getInstructions({ currentDate: format(new Date(), 'YYYY-MM-DD') }),
           contents: [
             ...conversation.messages.map(message => ({
               role: message.role === MessageRole.USER ? "user" : "model",
