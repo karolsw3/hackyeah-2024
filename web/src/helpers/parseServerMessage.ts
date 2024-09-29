@@ -1,15 +1,18 @@
 export function parseServerMessage(serverMessage: string): string {
-	const startTag = '<|som|>';
-	const endTag = '<|eom|>';
+	const startOfMessageTag = '<|som|>';
+	const endOfMessageTag = '<|eom|>';
 	
-	const startIndex = serverMessage.indexOf(startTag);
+	// Replace declarations with a markdown 'Download' link
+	serverMessage = serverMessage.replace(/<\|sod\|>[\s\S]*?<\|eod\|>/g, '#### [Download](#)');
+	
+	const startIndex = serverMessage.indexOf(startOfMessageTag);
 	if (startIndex === -1) {
 		// <|som|> not found, return an empty string
 		return '';
 	}
 	
-	const contentStartIndex = startIndex + startTag.length;
-	const endIndex = serverMessage.indexOf(endTag, contentStartIndex);
+	const contentStartIndex = startIndex + startOfMessageTag.length;
+	const endIndex = serverMessage.indexOf(endOfMessageTag, contentStartIndex);
 	
 	if (endIndex === -1) {
 		// <|eom|> not found, extract till the end

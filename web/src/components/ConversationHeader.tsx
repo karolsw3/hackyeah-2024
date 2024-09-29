@@ -11,7 +11,7 @@ type ConversationHeaderProps = {
 	isTitleChangeDisabled?: boolean;
 }
 
-const ConversationMessage = (props: ConversationHeaderProps) => {
+const ConversationHeader = (props: ConversationHeaderProps) => {
 	const { t } = useTranslation()
 	const [title, setTitle] = useState(props.title);
 
@@ -55,6 +55,7 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 						'flex items-center justify-center space-x-2',
 						'hover:underline'
 					)}
+					target={'_blank'}
 					href={`data:text/xml;charset=utf-8,${encodeURIComponent(props.xml)}`}
 				>
 					<span>
@@ -67,4 +68,4 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 	)
 }
 
-export default ConversationMessage;
+export default ConversationHeader;

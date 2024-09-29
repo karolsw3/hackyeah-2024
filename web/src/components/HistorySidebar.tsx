@@ -89,7 +89,7 @@ const HistorySidebar = () => {
 							)}
 							onClick={() => handleClickHistoryEntry(conversation._id)}
 						>
-							{conversation.label || t("Konwersacja") + " #" + conversation._id.slice(0, 3)}
+							{conversation.label || t("Konwersacja") + " #" + conversation._id.slice(-3)}
 						</button>
 					))}
 					<div

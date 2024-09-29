@@ -45,7 +45,7 @@ const MainChatWindow: React.FC = () => {
 
 	const currentConversationLabel = useMemo(() => {
 		if (!currentConversation) return t("Nowa konwersacja");
-		return currentConversation.label ?? t("Konwersacja") + " #" + currentConversation._id.slice(0, 3);
+		return currentConversation.label ?? t("Konwersacja") + " #" + currentConversation._id.slice(-3);
 	}, [currentConversation, t]);
 
 	return (
