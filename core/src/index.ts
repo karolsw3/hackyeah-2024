@@ -44,6 +44,7 @@ const startApp = async () => {
       auth.set({
         value: await jwt.sign({ userId: uuidv4() }),
         httpOnly: true,
+        sameSite: 'none',
         maxAge: 7 * 86400,
       })
       set.status = 201
