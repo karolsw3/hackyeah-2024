@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { swagger } from '@elysiajs/swagger'
 import { instructions } from "./instructions";
-import { MESSAGE_END_TAG, MESSAGE_START_TAG } from "../../constants";
+import { MESSAGE_END_TAG, MESSAGE_START_TAG, DATA_START_TAG, DATA_END_TAG } from "../../constants";
 import { genAI } from "./helpers/genAI";
 import mongoose from "mongoose";
 import jwt from "@elysiajs/jwt";
@@ -10,6 +10,8 @@ import { Conversation, MessageRole } from "./models/Conversation.model";
 import cors from "@elysiajs/cors";
 import { generateTextToSpeech } from "./helpers/generateTextToSpeech";
 import { Content } from "@google/generative-ai";
+import { getPccTaxDeclarationJson } from "./helpers/getPccTaxDeclarationJson";
+import { XMLBuilder } from "fast-xml-parser";
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-pro-002",
@@ -88,10 +90,34 @@ const startApp = async () => {
       })
 
       let text = '';
+      let stopYieldingMessage = false;
       for await (const message of result.stream) {
         const textChunk = message.text();
         text += textChunk;
-        yield textChunk;
+
+        if (!stopYieldingMessage) {
+          // Stop yielding text chunks at end tag, find index of end tag
+          const endTagIndex = textChunk.indexOf(MESSAGE_END_TAG);
+          if (endTagIndex !== -1) {
+            // Yield the text up to the end tag
+            yield text.slice(0, endTagIndex + MESSAGE_END_TAG.length);
+            stopYieldingMessage = true;
+          }
+
+          yield textChunk;
+        }
+      }
+      const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG))
+      if (dataText.length > 0) {
+        try {
+          const data = JSON.parse(dataText)
+          const pccTaxDeclarationJson = getPccTaxDeclarationJson(data.pccTaxDeclaration)
+          const xmlBuilder = new XMLBuilder();
+          const xml = xmlBuilder.build(pccTaxDeclarationJson)
+          yield `${DATA_START_TAG}${xml}${DATA_END_TAG}`
+        } catch (error) {
+          console.error('Error parsing data', error)
+        }
       }
 
       // Add the user message and the AI completion to the conversation
