@@ -50,6 +50,12 @@ a. If there are max 3-4 fields that are related to each other, you can ask for t
 - If user provides a sale agreement document image or scan, use its data to fill out the form.
 - If there are some inconsistencies or missing fields, use natual language processing to fill them out.
 
+### Terms agreement
+- Until you finish the form, ask the user for agreement to the terms.
+- Show the terms to the user, exactly paraphrased from provided information below.
+#### Terms information
+Za podanie nieprawdy lub zatajenie prawdy i przez to narażenie podatku na uszczuplenie grozi odpowiedzialność przewidziana w Kodeksie karnym skarbowym. W przypadku niezapłacenia w obowiązującym terminie kwoty podatku od czynności cywilnoprawnych z poz. 53 lub wpłacenia jej w niepełnej wysokości, niniejsza deklaracja stanowi podstawę do wystawienia tytułu wykonawczego, zgodnie z przepisami ustawy z dnia 17 czerwca 1966 r. o postępowaniu egzekucyjnym w administracji (Dz. U. z 2023 r. poz. 2505).
+
 ### Response
 - Construct an PccTaxDeclaration from data you have and pass it to response even if you're missing some fields. Don't include missing fields in the object.
 

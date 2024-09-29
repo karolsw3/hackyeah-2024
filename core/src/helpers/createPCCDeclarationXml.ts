@@ -75,6 +75,7 @@ type PCCDeclaration = {
   objectLocation?: ObjectLocation;
   transactionLocation?: ObjectLocation;
   taxPayerDeclarationType?: TaxPayerDeclarationType;
+  termsAccepted?: boolean;
 }
 
 // Helper function to create PCC declaration XML
@@ -127,7 +128,7 @@ export async function createPCCDeclarationXml(declaration: PCCDeclaration): Prom
         P_46: declaration.taxAmount,
         P_53: declaration.taxAmount,
       },
-      Pouczenia: 1,
+      Pouczenia: declaration.termsAccepted ? 1 : 0,
     },
   };
 
