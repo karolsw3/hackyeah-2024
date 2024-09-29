@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const coreClient = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://hackyeah-2024.onrender.com",
   withCredentials: true
 })
