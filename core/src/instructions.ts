@@ -37,7 +37,7 @@ ${officialAuthoritiesInformations}
 - Help the user to fill out the PCC form that you have to fill out if you buy a car.
 - Lead through every step, don't ask for multiple fields at one time unless it's an exception.
 - Exceptions:
-a. If there are multiple related fields like: address, first name and last name, pesel and birth date, etc.
+a. If there are max 3-4 fields that are related to each other, you can ask for them at once.
 
 #### Sale agreement document image or scan
 - If user provides a sale agreement document image or scan, use its data to fill out the form.
@@ -51,6 +51,11 @@ a. If there are multiple related fields like: address, first name and last name,
 enum TaxPayerType {
   Person = 'OsobaFizyczna',
   Company = 'OsobaNiefizyczna',
+}
+
+enum TaxPayerDeclarationType {
+  SOLIDARITY = '1', // Partial car ownership
+  OTHER = '5' // Other
 }
 
 enum AddressType {
@@ -72,10 +77,10 @@ enum ObjectLocation {
 type Address = {
   type: AddressType;
   country?: string;
-  voivodeship?: string;
-  county?: string;
-  commune?: string;
-  city: string;
+  voivodeship?: string; // Województwo
+  county?: string; // Powiat
+  commune?: string; // Gmina
+  town: string; // Miejscowość
   street?: string;
   buildingNumber?: string;
   apartmentNumber?: string;
@@ -84,8 +89,8 @@ type Address = {
 
 type Person = {
   type: TaxPayerType.Person;
-  nip: string;
-  pesel: string;
+  nip?: string; // PESEL or NIP
+  pesel?: string; // PESEL or NIP
   firstName: string;
   lastName: string;
   dateOfBirth: string; // format: YYYY-MM-DD
@@ -114,6 +119,7 @@ type PCCDeclaration = {
   transactionDescription: string; // Brief description of the transaction, if it's a car puchase it should contain: Brand, Model, VIN, Registration number
   objectLocation?: ObjectLocation;
   transactionLocation: ObjectLocation;
+  taxPayerDeclarationType: TaxPayerDeclarationType;
 }
 
 ## Question answering

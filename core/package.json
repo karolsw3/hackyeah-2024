@@ -11,9 +11,11 @@
     "@elysiajs/swagger": "^1.1.1",
     "@google/generative-ai": "^0.20.0",
     "axios": "^1.7.7",
+    "csvtojson": "^2.0.10",
     "date-fns": "^4.1.0",
     "elysia": "latest",
     "fast-xml-parser": "^4.5.0",
+    "fuse.js": "^7.0.0",
     "mongoose": "^8.7.0",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"

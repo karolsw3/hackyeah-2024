@@ -1,9 +1,16 @@
 import { XMLBuilder } from 'fast-xml-parser';
+import { findCommuneCode, findCountyCode, findVoivodeshipCode, getCommuneName, getCountyName, getVoivodeshipName } from '../teryt';
+import { add } from 'date-fns';
 
 // Enums and types for form fields
 enum TaxPayerType {
   Person = 'OsobaFizyczna',
   Company = 'OsobaNiefizyczna',
+}
+
+enum TaxPayerDeclarationType {
+  SOLIDARITY = '1', // Partial car ownership
+  OTHER = '5' // Other
 }
 
 enum AddressType {
@@ -28,7 +35,7 @@ type Address = {
   voivodeship?: string;
   county?: string;
   commune?: string;
-  city: string;
+  town: string;
   street?: string;
   buildingNumber?: string;
   apartmentNumber?: string;
@@ -67,10 +74,11 @@ type PCCDeclaration = {
   transactionDescription?: string; // Brief description of the transaction, if it's a car puchase it should contain: Brand, Model, VIN, Registration number
   objectLocation?: ObjectLocation;
   transactionLocation?: ObjectLocation;
+  taxPayerDeclarationType?: TaxPayerDeclarationType;
 }
 
 // Helper function to create PCC declaration XML
-export function createPCCDeclarationXml(declaration: PCCDeclaration): string {
+export async function createPCCDeclarationXml(declaration: PCCDeclaration): Promise<string> {
   const builder = new XMLBuilder({
     ignoreAttributes: false,
     format: true,
@@ -106,11 +114,11 @@ export function createPCCDeclarationXml(declaration: PCCDeclaration): string {
         ),
         AdresZamieszkaniaSiedziby: {
           '@_rodzajAdresu': 'RAD',
-          ...(declaration.address ? { [declaration.address.type]: createAddressData(declaration.address) } : {}),
+          ...(declaration.address ? { [declaration.address.type]: await createAddressData(declaration.address) } : {}),
         },
       },
       PozycjeSzczegolowe: {
-        P_7: declaration.taxPayer?.type,
+        P_7: declaration.taxPayerDeclarationType,
         P_20: 1,
         P_21: declaration.objectLocation,
         P_22: declaration.transactionLocation,
@@ -148,10 +156,32 @@ function createTaxPayerData(taxPayer: TaxPayer): object {
 }
 
 // Helper function to create address data
-function createAddressData(address: Address): object {
+async function createAddressData(address: Address): Promise<object> {
+  let voivodeship: string | null | undefined = address.voivodeship;
+  let county: string | null | undefined = address.county;
+  let commune: string | null | undefined = address.commune;
+  if (address.voivodeship) {
+    const voivodeshipCode = await findVoivodeshipCode(address.voivodeship);
+    if (voivodeshipCode) {
+      voivodeship = await getVoivodeshipName(voivodeshipCode);
+      if (address.county) {
+        const countyCode = await findCountyCode(voivodeshipCode, address.county);
+        if (countyCode) {
+          county = await getCountyName(voivodeshipCode, countyCode);
+          if (address.commune) {
+            const communeCode = await findCommuneCode(voivodeshipCode, countyCode, address.commune);
+            if (communeCode) {
+              commune = await getCommuneName(voivodeshipCode, countyCode, communeCode);
+            }
+          }
+        }
+      }
+    }
+  }
+
   const commonFields = {
     KodKraju: address.country,
-    Miejscowosc: address.city,
+    Miejscowosc: address.town,
     Ulica: address.street,
     NrDomu: address.buildingNumber,
     NrLokalu: address.apartmentNumber,
@@ -161,9 +191,9 @@ function createAddressData(address: Address): object {
   if (address.type === AddressType.Polish) {
     return {
       ...commonFields,
-      Wojewodztwo: address.voivodeship,
-      Powiat: address.county,
-      Gmina: address.commune,
+      Wojewodztwo: voivodeship?.toUpperCase(),
+      Powiat: county?.toUpperCase(),
+      Gmina: commune?.toUpperCase()
     };
   } else {
     return commonFields;

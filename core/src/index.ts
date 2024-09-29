@@ -6,7 +6,7 @@ import { genAI } from "./helpers/genAI";
 import mongoose from "mongoose";
 import jwt from "@elysiajs/jwt";
 import { v4 as uuidv4 } from 'uuid';
-import { Conversation, MessageRole } from "./models/Conversation.model";
+import { Conversation, IConversation, MessageRole } from "./models/Conversation.model";
 import cors from "@elysiajs/cors";
 import { Content } from "@google/generative-ai";
 import { createPCCDeclarationXml } from "./helpers/createPCCDeclarationXml";
@@ -112,7 +112,7 @@ const startApp = async () => {
           try {
             const data = JSON.parse(dataText);
             if (data.pccDeclaration) {
-              const pccDeclarationXml = createPCCDeclarationXml(data.pccDeclaration);
+              const pccDeclarationXml = await createPCCDeclarationXml(data.pccDeclaration);
               yield `${DATA_START_TAG}${pccDeclarationXml}${DATA_END_TAG}`;
             }
           } catch (error) {
@@ -155,14 +155,17 @@ const startApp = async () => {
         }
       }
       const conversations = await Conversation.find({ userId: jwtData.userId })
-      return {
-        conversations: conversations.map(conversation => {
-          const modifiedMessages = getMessagesWithXml(conversation.messages)
-          return {
-            ...conversation.toJSON(),
-            messages: modifiedMessages
-          }
+      const modifiedConversations: IConversation[] = []
+      for (const conversation of conversations) {
+        const modifiedMessages = await getMessagesWithXml(conversation.messages)
+        modifiedConversations.push({
+          ...conversation.toJSON(),
+          messages: modifiedMessages
         })
+        console.log(modifiedConversations)
+      }
+      return {
+        conversations: modifiedConversations
       }
     })
     .post("/conversations", async ({ jwt, cookie: { auth }, error }) => {
