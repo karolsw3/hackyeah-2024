@@ -34,6 +34,8 @@ const InputArea = () => {
 		}
 		try {
 			setInputValue('')
+			setSelectedFile(null)
+			setSelectedFileURL(null)
 			if (!currentlyOpenConversationId) {
 				await createUser()
 				await createConversation()
