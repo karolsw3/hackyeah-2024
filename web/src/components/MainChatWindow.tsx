@@ -82,7 +82,7 @@ const MainChatWindow: React.FC = () => {
 							>
 								<p>{ t("Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi") }.</p>
 								<p>{ t("Rozpocznij konwersację wpisując polecenie na dole strony") }.</p>
-								<br/>
+								<br />
 								<p>{ t("Możesz") }:</p>
 								<ul>
 									<li
@@ -93,7 +93,7 @@ const MainChatWindow: React.FC = () => {
 									<li
 										className={ 'mt-1' }
 									>
-										– { t("Zapytać mnie o dowolny askpekt deklaracji") }
+										– { t("Zapytać mnie o dowolny aspekt deklaracji") }
 									</li>
 									<li
 										className={ 'mt-1' }
