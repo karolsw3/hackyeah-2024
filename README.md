@@ -20,12 +20,6 @@
 - **Saving and storing conversations** for future reference.
 - Ensuring **data security** and **confidentiality**.
 
-## Organizational Requirements:
-Submit by **10:00 PM on the first day**:
-- Solution concept.
-- Architecture.
-- Technologies used.
-
 ## Key Benefits:
 - Simplified tax filing process.
 - **24/7 availability** of the assistant.
