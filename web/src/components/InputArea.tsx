@@ -6,8 +6,10 @@ import { SendButton } from './SendButton.tsx'
 import { FileUploadButton } from './FileUploadButton.tsx'
 import { fileToBase64URL } from '../helpers/fileToBase64URL.ts'
 import { FiX } from 'react-icons/fi'
+import { useTranslation } from 'react-i18next'
 
 const InputArea = () => {
+	const { t } = useTranslation();
 	useApiCommunicatorStore.getState()
 	const {
 		sendMessage,
@@ -111,7 +113,7 @@ const InputArea = () => {
 						autoFocus={true}
 						type={'text'}
 						value={inputValue}
-						placeholder={'Wiadomość...'}
+						placeholder={t('Wiadomość...')}
 						onChange={e => setInputValue(e.target.value)}
 						className={classNames(
 							'w-full h-full px-4 py-3 rounded-full'

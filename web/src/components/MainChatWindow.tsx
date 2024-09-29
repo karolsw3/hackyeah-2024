@@ -6,8 +6,10 @@ import classNames from 'classnames'
 import ConversationHeader from './ConversationHeader.tsx'
 import { getDataFromServerMessage } from '../helpers/getDataFromServerMessage.ts'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
 const MainChatWindow: React.FC = () => {
+	const { t } = useTranslation();
 	const apiCommunicatorState = useApiCommunicatorStore()
 	const updateConversation = apiCommunicatorState.updateConversation;
 	const currentConversation = useMemo(() => {
@@ -40,7 +42,7 @@ const MainChatWindow: React.FC = () => {
 
 	const currentConversationLabel = useMemo(() => {
 		if (!currentConversation) return '-';
-		return currentConversation.label ?? 'Konwersacja';
+		return currentConversation.label ?? t("Konwersacja") + " #" + currentConversation._id.slice(0, 3);
 	}, [currentConversation]);
 
 	return (

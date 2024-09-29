@@ -2,8 +2,11 @@ import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunica
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { useTranslation } from 'react-i18next'
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 const HistorySidebar = () => {
+	const { t, i18n } = useTranslation();
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	const createNewConversation = useApiCommunicatorStore((state) => state.createConversation)
@@ -14,6 +17,10 @@ const HistorySidebar = () => {
 
 	const handleClickHistoryEntry = (conversationId: string) => {
 		setCurrentlyOpenConversationId(conversationId);
+	}
+
+	const handleChangeLanguage = (newLanguage: string) => {
+		i18n.changeLanguage(newLanguage);
 	}
 
 	useEffect(() => {
@@ -48,6 +55,7 @@ const HistorySidebar = () => {
 					className={classNames(
 						'h-screen w-64 border-r border-neutral-300',
 						'bg-gov-light-gray shadow-md overflow-hidden',
+						'flex flex-col',
 						'relative',
 					)}
 				>
@@ -74,7 +82,7 @@ const HistorySidebar = () => {
 							)}
 							onClick={() => handleClickHistoryEntry(conversation._id)}
 						>
-							{conversation.label || 'Konwersacja #' + conversation._id.slice(0, 3)}
+							{conversation.label || t("Konwersacja") + " #" + conversation._id.slice(0, 3)}
 						</button>
 					))}
 					<div
@@ -87,7 +95,28 @@ const HistorySidebar = () => {
 								'text-gov-blue font-bold hover:bg-gov-light-blue hover:border-gov-light-blue hover:text-white'
 							)}
 						>
-							Nowa konwersacja
+							{t("Nowa konwersacja")}
+						</button>
+					</div>
+					<div
+						className={ 'mt-auto w-full p-3 mb-6 flex flex-col space-y-4 items-start' }
+					>
+						<div
+							className={ 'w-3/4 h-px bg-neutral-300 mb-2' }
+						/>
+						<button
+							onClick={() => handleChangeLanguage('en')}
+							className={'px-1 hover:text-gov-light-blue text-sm'}
+						>
+							<span className="fi fi-gb mr-1"></span>
+							English
+						</button>
+						<button
+							onClick={() => handleChangeLanguage('ua')}
+							className={'px-1 hover:text-gov-light-blue text-sm'}
+						>
+							<span className="fi fi-ua mr-1"></span>
+							Українська
 						</button>
 					</div>
 				</div>

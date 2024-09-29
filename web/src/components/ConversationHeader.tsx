@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { LuClipboardEdit } from 'react-icons/lu';
 import { FiDownloadCloud } from "react-icons/fi";
+import { useTranslation } from 'react-i18next'
 
 type ConversationHeaderProps = {
 	title: string;
@@ -11,6 +12,7 @@ type ConversationHeaderProps = {
 }
 
 const ConversationMessage = (props: ConversationHeaderProps) => {
+	const { t } = useTranslation()
 	const [title, setTitle] = useState(props.title);
 
 	useEffect(() => {
@@ -56,7 +58,7 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 					href={`data:text/xml;charset=utf-8,${encodeURIComponent(props.xml)}`}
 				>
 					<span>
-						Eksportuj plik XML
+						{t("Eksportuj plik XML")}
 					</span>
 					<FiDownloadCloud />
 				</a>
