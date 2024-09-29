@@ -104,8 +104,8 @@ type Company = {
 type TaxPayer = Person | Company;
 
 type PCCDeclaration = {
-  declarationDate?: string; // format: YYYY-MM-DD
-  transactionDate?: string; // format: YYYY-MM-DD
+  declarationDate?: number; // format: YYYY-MM-DD
+  transactionDate?: number; // format: YYYY-MM-DD
   taxOfficeCode?: string;
   taxPayer?: TaxPayer;
   address?: Address;

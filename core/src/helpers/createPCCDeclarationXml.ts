@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { XMLBuilder } from 'fast-xml-parser';
 
 // Enums and types for form fields
@@ -41,7 +42,7 @@ type Person = {
   pesel?: string;
   firstName?: string;
   lastName?: string;
-  dateOfBirth?: string; // format: YYYY-MM-DD
+  dateOfBirth?: number; // format: YYYY-MM-DD
   fatherName?: string;
   motherName?: string;
 }
@@ -56,8 +57,8 @@ type Company = {
 type TaxPayer = Person | Company;
 
 type PCCDeclaration = {
-  declarationDate?: string; // format: YYYY-MM-DD
-  transactionDate?: string; // format: YYYY-MM-DD
+  declarationDate?: number; // format: YYYY-MM-DD
+  transactionDate?: number; // format: YYYY-MM-DD
   taxOfficeCode?: string;
   taxPayer?: TaxPayer;
   address?: Address;
@@ -92,7 +93,7 @@ export function createPCCDeclarationXml(declaration: PCCDeclaration): string {
           '@_poz': 'P_6',
         },
         Data: {
-          '#text': declaration.transactionDate,
+          '#text': declaration.transactionDate ? format(declaration.transactionDate, 'yyyy-MM-dd') : undefined,
           '@_poz': 'P_4',
         },
         KodUrzedu: declaration.taxOfficeCode,
@@ -134,7 +135,7 @@ function createTaxPayerData(taxPayer: TaxPayer): object {
       PESEL: taxPayer.pesel,
       ImiePierwsze: taxPayer.firstName,
       Nazwisko: taxPayer.lastName,
-      DataUrodzenia: taxPayer.dateOfBirth,
+      DataUrodzenia: taxPayer.dateOfBirth ? format(taxPayer.dateOfBirth, 'yyyy-MM-dd') : undefined,
       ImieOjca: taxPayer.fatherName,
       ImieMatki: taxPayer.motherName,
     };
