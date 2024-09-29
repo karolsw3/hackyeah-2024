@@ -105,15 +105,22 @@ const HistorySidebar = () => {
 							className={ 'w-3/4 h-px bg-neutral-300 mb-2' }
 						/>
 						<button
-							onClick={() => handleChangeLanguage('en')}
-							className={'px-1 hover:text-gov-light-blue text-sm'}
+							onClick={ () => handleChangeLanguage('pl') }
+							className={ 'px-1 hover:text-gov-light-blue text-sm' }
+						>
+							<span className="fi fi-pl mr-1"></span>
+							Polski
+						</button>
+						<button
+							onClick={ () => handleChangeLanguage('en') }
+							className={ 'px-1 hover:text-gov-light-blue text-sm' }
 						>
 							<span className="fi fi-gb mr-1"></span>
 							English
 						</button>
 						<button
-							onClick={() => handleChangeLanguage('ua')}
-							className={'px-1 hover:text-gov-light-blue text-sm'}
+							onClick={ () => handleChangeLanguage('ua') }
+							className={ 'px-1 hover:text-gov-light-blue text-sm' }
 						>
 							<span className="fi fi-ua mr-1"></span>
 							Українська
