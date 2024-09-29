@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
 import classNames from 'classnames'
 import { SendButton } from './SendButton.tsx'
+import { FiPaperclip } from "react-icons/fi";
 
 const InputArea = () => {
 	useApiCommunicatorStore.getState()
@@ -42,22 +43,38 @@ const InputArea = () => {
 				'border-t border-neutral-200'
 			)}
 		>
-			<input
-				autoFocus={true}
-				type={'text'}
-				value={inputValue}
-				placeholder={'Message...'}
-				onChange={e => setInputValue(e.target.value)}
-				className={classNames(
-					'w-full rounded-full px-4 py-3',
-					'border border-neutral-300'
+			<div
+				className={ classNames(
+					'relative w-full rounded-full',
+					'border border-neutral-300 flex items-center'
 				)}
-				onKeyDown={handleInputKeyDown}
-			/>
+			>
+				<input
+					autoFocus={true}
+					type={'text'}
+					value={inputValue}
+					placeholder={'Wiadomość...'}
+					onChange={e => setInputValue(e.target.value)}
+					className={classNames(
+						'w-full h-full px-4 py-3 rounded-full'
+					)}
+					onKeyDown={handleInputKeyDown}
+				/>
+				<button
+					aria-label={'Upload file'}
+					className={ classNames(
+						'absolute right-0 mr-2 w-8 h-8 rounded-full',
+						'inline-flex items-center text-xl justify-center text-neutral-500',
+						'active:opacity-50 duration-75'
+					)}
+				>
+					<FiPaperclip/>
+				</button>
+			</div>
 			<SendButton
 				className='ml-2'
-				onClick={handleSendMessage}
-				disabled={inputValue === ''}
+				onClick={ handleSendMessage }
+				disabled={ inputValue === '' }
 			/>
 		</div>
 	);

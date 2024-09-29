@@ -87,7 +87,7 @@ const HistorySidebar = () => {
 								'text-gov-blue font-bold hover:bg-gov-light-blue hover:border-gov-light-blue hover:text-white'
 							)}
 						>
-							New Conversation
+							Nowa Konwersacja
 						</button>
 					</div>
 				</div>
