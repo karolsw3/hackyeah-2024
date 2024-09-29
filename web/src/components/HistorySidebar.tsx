@@ -1,5 +1,5 @@
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
