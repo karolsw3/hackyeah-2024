@@ -81,7 +81,7 @@ const startApp = async () => {
         }
       
         const result = await model.generateContentStream({
-          systemInstruction: getInstructions({ currentDate: format(new Date(), 'yyyy-mm-dd') }),
+          systemInstruction: getInstructions({ currentDate: format(new Date(), 'yyyy-MM-dd') }),
           contents: [
             ...conversation.messages.map(message => ({
               role: message.role === MessageRole.USER ? "user" : "model",
