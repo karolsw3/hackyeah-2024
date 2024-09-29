@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import type { ConversationMessage } from '../modules/ApiCommunicator/ApiCommunicator.ts'
 import { useEffect, useState } from 'react';
 import { LuClipboardEdit } from 'react-icons/lu';
+import { FiDownloadCloud } from "react-icons/fi";
 
 type ConversationHeaderProps = {
 	title: string;
@@ -27,8 +27,8 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 		>
 			<div className='flex items-center gap-1'>
 				<LuClipboardEdit size={16} className='text-neutral-600' />
-				<span 
-					role="textbox" 
+				<span
+					role="textbox"
 					contentEditable
 					onBlur={(e) => {
 						setTitle(e.currentTarget.innerText)
@@ -48,11 +48,17 @@ const ConversationMessage = (props: ConversationHeaderProps) => {
 			{props.xml && (
 				<a
 					className={classNames(
-						'bg-gov-blue text-white px-4 py-2 rounded-md'
+						'hover:bg-gov-light-gray text-neutral-800 px-4 py-2',
+						'rounded-md border border-neutral-200',
+						'flex items-center justify-center space-x-2',
+						'hover:underline'
 					)}
 					href={`data:text/xml;charset=utf-8,${encodeURIComponent(props.xml)}`}
 				>
-					Eksportuj plik XML
+					<span>
+						Eksportuj plik XML
+					</span>
+					<FiDownloadCloud />
 				</a>
 			)}
 		</div>
