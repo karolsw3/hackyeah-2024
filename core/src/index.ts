@@ -1,17 +1,16 @@
 import { Elysia, t } from "elysia";
 import { swagger } from '@elysiajs/swagger'
 import { instructions } from "./instructions";
-import { MESSAGE_END_TAG, MESSAGE_START_TAG, DATA_START_TAG, DATA_END_TAG } from "../../constants";
+import { MESSAGE_END_TAG, DATA_START_TAG, DATA_END_TAG } from "../../constants";
 import { genAI } from "./helpers/genAI";
 import mongoose from "mongoose";
 import jwt from "@elysiajs/jwt";
 import { v4 as uuidv4 } from 'uuid';
 import { Conversation, MessageRole } from "./models/Conversation.model";
 import cors from "@elysiajs/cors";
-import { generateTextToSpeech } from "./helpers/generateTextToSpeech";
 import { Content } from "@google/generative-ai";
 import { createPCCDeclarationXml } from "./helpers/createPCCDeclarationXml";
-import { XMLBuilder } from "fast-xml-parser";
+import { getMessagesWithXml } from "./helpers/getMessagesWithXml";
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-pro-002",
@@ -133,10 +132,6 @@ const startApp = async () => {
         timestamp: Date.now()
       })
       await conversation.save()
-      const messageStartTagIndex = text.indexOf(MESSAGE_START_TAG)
-      const messageEndTagIndex = text.indexOf(MESSAGE_END_TAG)
-      const message = text.slice(messageStartTagIndex + MESSAGE_START_TAG.length, messageEndTagIndex)
-      // const textToSpeechResponse = await generateTextToSpeech(message)
     }, {
       body: t.Object({
         message: t.String({
@@ -157,7 +152,13 @@ const startApp = async () => {
       }
       const conversations = await Conversation.find({ userId: jwtData.userId })
       return {
-        conversations: conversations.map(conversation => conversation.toJSON())
+        conversations: conversations.map(conversation => {
+          const modifiedMessages = getMessagesWithXml(conversation.messages)
+          return {
+            ...conversation.toJSON(),
+            messages: modifiedMessages
+          }
+        })
       }
     })
     .post("/conversations", async ({ jwt, cookie: { auth }, error }) => {
