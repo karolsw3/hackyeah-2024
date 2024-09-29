@@ -10,7 +10,7 @@ import { Conversation, MessageRole } from "./models/Conversation.model";
 import cors from "@elysiajs/cors";
 import { generateTextToSpeech } from "./helpers/generateTextToSpeech";
 import { Content } from "@google/generative-ai";
-import { getPccTaxDeclarationJson } from "./helpers/getPccTaxDeclarationJson";
+import { createPCCDeclarationXml } from "./helpers/createPCCDeclarationXml";
 import { XMLBuilder } from "fast-xml-parser";
 
 const model = genAI.getGenerativeModel({
@@ -90,28 +90,35 @@ const startApp = async () => {
       })
 
       let text = '';
-      let yieldedText = '';
+      let messageYieldFinished = false;
       for await (const message of result.stream) {
         const textChunk = message.text();
         text += textChunk;
-        // Stop yielding at printed message end tag
-        if (yieldedText.includes(MESSAGE_END_TAG)) continue;
-        if (text.includes(MESSAGE_END_TAG) && !yieldedText.includes(MESSAGE_END_TAG)) {
-          yield textChunk.slice(0, textChunk.indexOf(MESSAGE_END_TAG) + MESSAGE_END_TAG.length);
+        if (messageYieldFinished) continue;
+        if (!text.includes(MESSAGE_END_TAG)) {
+          yield textChunk;
+        } else if (text.includes(MESSAGE_END_TAG)) {
+          // Yield starting from textChunk to the end of the message
+          const messageStartIndex = text.indexOf(textChunk);
+          const messageEndIndex = text.indexOf(MESSAGE_END_TAG) + MESSAGE_END_TAG.length;
+          yield text.slice(messageStartIndex, messageEndIndex);
+          messageYieldFinished = true;
         }
-        yield textChunk;
-        yieldedText += textChunk;
       }
-      const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG))
-      if (dataText.length > 0) {
-        try {
-          const data = JSON.parse(dataText)
-          const pccTaxDeclarationJson = getPccTaxDeclarationJson(data.pccTaxDeclaration)
-          const xmlBuilder = new XMLBuilder();
-          const xml = xmlBuilder.build(pccTaxDeclarationJson)
-          yield `${DATA_START_TAG}${xml}${DATA_END_TAG}`
-        } catch (error) {
-          console.error('Error parsing data', error)
+      
+      // Process data after message yielding is complete
+      if (text.indexOf(DATA_START_TAG) && text.includes(MESSAGE_END_TAG)) {
+        const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG));
+        if (dataText.length > 0) {
+          try {
+            const data = JSON.parse(dataText);
+            if (data.pccDeclaration) {
+              const pccDeclarationXml = createPCCDeclarationXml(data.pccDeclaration);
+              yield `${DATA_START_TAG}${pccDeclarationXml}${DATA_END_TAG}`;
+            }
+          } catch (error) {
+            console.error('Error parsing data', error);
+          }
         }
       }
 
