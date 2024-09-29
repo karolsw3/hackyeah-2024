@@ -1,5 +1,5 @@
 import { useApiCommunicatorStore } from '../modules/ApiCommunicator/ApiCommunicatorStore.ts'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
@@ -74,7 +74,7 @@ const HistorySidebar = () => {
 							)}
 							onClick={() => handleClickHistoryEntry(conversation._id)}
 						>
-							{conversation.label || 'Konwersacja'}
+							{conversation.label || 'Konwersacja #' + conversation._id.slice(0, 3)}
 						</button>
 					))}
 					<div
