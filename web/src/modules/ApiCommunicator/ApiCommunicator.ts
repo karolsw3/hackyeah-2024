@@ -30,8 +30,8 @@ export type SendMessageProps = {
 	message: string;
 	conversationId?: string;
 	xmlString?: string;
-	// TODO: Fix file upload type
-	file?: unknown;
+	fileData?: string;
+	mimeType?: string;
 }
 
 export interface ApiCommunicator {

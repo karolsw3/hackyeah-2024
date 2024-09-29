@@ -9,6 +9,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { Conversation, MessageRole } from "./models/Conversation.model";
 import cors from "@elysiajs/cors";
 import { generateTextToSpeech } from "./helpers/generateTextToSpeech";
+import { Content } from "@google/generative-ai";
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-pro-002",
+});
+const generationConfig = {
+  temperature: 0.3,
+  topP: 0.95,
+  topK: 40,
+  maxOutputTokens: 2048,
+  responseMimeType: "text/plain",
+};
 
 const startApp = async () => {
   await mongoose.connect(Bun.env.MONGODB_URI!, {
@@ -48,32 +60,32 @@ const startApp = async () => {
       if (conversation.userId !== jwtData.userId) {
         return error('Unauthorized', 401)
       }
+      const userMessageTimestamp = Date.now()
 
-      const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-pro-002",
-        systemInstruction: instructions,
-      });
-      const generationConfig = {
-        temperature: 0.3,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 2048,
-        responseMimeType: "text/plain",
-      };
-      const chatSession = model.startChat({
-        generationConfig,
-        history: conversation.messages.map(message => ({
-          role: message.role === MessageRole.USER ? "user" : "model",
-          parts: [{ text: message.text }],
-        })),
-      });
-      conversation.messages.push({
-        role: MessageRole.USER,
-        text: body.message,
-        timestamp: Date.now()
-      })
+      const userContent: Content = {
+        role: "user",
+        parts: [{ text: body.message }],
+      }
+      if (body.fileData && body.mimeType) {
+        userContent.parts.push({
+          inlineData: {
+            mimeType: body.mimeType,
+            data: body.fileData
+          }
+        })
+      }
     
-      const result = await chatSession.sendMessageStream(body.message);
+      const result = await model.generateContentStream({
+        systemInstruction: instructions,
+        contents: [
+          ...conversation.messages.map(message => ({
+            role: message.role === MessageRole.USER ? "user" : "model",
+            parts: [{ text: message.text }],
+          })),
+          userContent,
+        ],
+        generationConfig,
+      })
 
       let text = '';
       for await (const message of result.stream) {
@@ -81,7 +93,13 @@ const startApp = async () => {
         text += textChunk;
         yield textChunk;
       }
+
+      // Add the user message and the AI completion to the conversation
       conversation.messages.push({
+        role: MessageRole.USER,
+        text: body.message,
+        timestamp: userMessageTimestamp
+      }, {
         role: MessageRole.COMPLETION,
         text,
         timestamp: Date.now()
@@ -98,6 +116,8 @@ const startApp = async () => {
           minLength: 0
         }),
         conversationId: t.String(),
+        fileData: t.Optional(t.String()),
+        mimeType: t.Optional(t.String())
       })
     })
     .get("/conversations", async ({ jwt, cookie: { auth } }) => {
