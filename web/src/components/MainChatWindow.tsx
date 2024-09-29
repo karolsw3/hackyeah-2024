@@ -64,53 +64,57 @@ const MainChatWindow: React.FC = () => {
 			>
 				{messages.length === 0 && (
 					<div
-						className={ classNames(
-							'mb-5 mx-auto border border-gov-light-gray',
-							'rounded-2xl w-full max-w-4xl p-4 text-left text-neutral-500 shadow-sm'
-						) }
+						className={ 'px-4' }
 					>
-						<p>Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi.</p>
-						<p>Rozpocznij konwersację wpisując polecenie na dole strony.</p>
-						<br />
-						<p>Możesz:</p>
-						<ul>
-							<li
-								className={'mt-1'}
-							>
-								- Wysłać mi zdjęcie swojej umowy kupna-sprzedaży, bym pomógł Ci z deklaracją PCC
-							</li>
-							<li
-								className={'mt-1'}
-							>
-								- Zapytać mnie o dowolny askpekt deklaracji
-							</li>
-							<li
-								className={'mt-1'}
-							>
-								- Powiedzieć mi czego szukasz, a na pewno znajdę dla Ciebie odpowiednie rozwiązanie :)
-							</li>
-						</ul>
+						<div
+							className={ classNames(
+								'mb-5 mx-auto border border-gov-light-gray',
+								'rounded-2xl w-full max-w-4xl p-4 text-left text-neutral-500 shadow-sm'
+							) }
+						>
+							<p>Cześć, jestem tu by pomóc Ci z Twoimi deklaracjami podatkowymi.</p>
+							<p>Rozpocznij konwersację wpisując polecenie na dole strony.</p>
+							<br/>
+							<p>Możesz:</p>
+							<ul>
+								<li
+									className={ 'mt-1' }
+								>
+									- Wysłać mi zdjęcie swojej umowy kupna-sprzedaży, bym pomógł Ci z deklaracją PCC
+								</li>
+								<li
+									className={ 'mt-1' }
+								>
+									- Zapytać mnie o dowolny askpekt deklaracji
+								</li>
+								<li
+									className={ 'mt-1' }
+								>
+									- Powiedzieć mi czego szukasz, a na pewno znajdę dla Ciebie odpowiednie rozwiązanie :)
+								</li>
+							</ul>
+						</div>
 					</div>
 				) }
 				<AnimatePresence initial={ true } mode="popLayout">
-					{[...messages].reverse().map((message, index) => (
+					{ [...messages].reverse().map((message, index) => (
 						<motion.div
-							initial={{ opacity: 0, scale: 0.9 }}
-							animate={{ opacity: 1, scale: 1 }}
-							exit={{ opacity: 0, scale: 0.9 }}
-							transition={{
+							initial={ { opacity: 0, scale: 0.9 } }
+							animate={ { opacity: 1, scale: 1 } }
+							exit={ { opacity: 0, scale: 0.9 } }
+							transition={ {
 								delay: 0.05 * index,
-							}}
-							key={`conversation-message-${message.timestamp}-${message.role}`}
+							} }
+							key={ `conversation-message-${ message.timestamp }-${ message.role }` }
 						>
 							<ConversationMessage
-								{...message}
+								{ ...message }
 							/>
 						</motion.div>
-					))}
+					)) }
 				</AnimatePresence>
 			</div>
-			<InputArea />
+			<InputArea/>
 		</div>
 	)
 }
