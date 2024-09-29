@@ -52,92 +52,96 @@ const startApp = async () => {
       return
     })
     .post("/messages", async function* ({ body, jwt, cookie: { auth }, error }) {
-      const jwtData = await jwt.verify(auth.value)
-      if (!jwtData) {
-        return error('Unauthorized', 401)
-      }
-      const conversation = await Conversation.findOne({ _id: body.conversationId })
-      if (!conversation) {
-        return error('Not Found', 404)
-      }
-      if (conversation.userId !== jwtData.userId) {
-        return error('Unauthorized', 401)
-      }
-      const userMessageTimestamp = Date.now()
-
-      const userContent: Content = {
-        role: "user",
-        parts: [{ text: body.message }],
-      }
-      if (body.fileData && body.mimeType) {
-        userContent.parts.push({
-          inlineData: {
-            mimeType: body.mimeType,
-            data: body.fileData
-          }
-        })
-      }
-    
-      const result = await model.generateContentStream({
-        systemInstruction: instructions,
-        contents: [
-          ...conversation.messages.map(message => ({
-            role: message.role === MessageRole.USER ? "user" : "model",
-            parts: [{ text: message.text }],
-          })),
-          userContent,
-        ],
-        generationConfig,
-      })
-
-      let text = '';
-      let messageYieldFinished = false;
-      for await (const message of result.stream) {
-        const textChunk = message.text();
-        text += textChunk;
-        if (messageYieldFinished) continue;
-        if (!text.includes(MESSAGE_END_TAG)) {
-          yield textChunk;
-        } else if (text.includes(MESSAGE_END_TAG)) {
-          // Yield starting from textChunk to the end of the message
-          const messageStartIndex = text.indexOf(textChunk);
-          const messageEndIndex = text.indexOf(MESSAGE_END_TAG) + MESSAGE_END_TAG.length;
-          yield text.slice(messageStartIndex, messageEndIndex);
-          messageYieldFinished = true;
+      try {
+        const jwtData = await jwt.verify(auth.value)
+        if (!jwtData) {
+          return error('Unauthorized', 401)
         }
-      }
-      
-      // Process data after message yielding is complete
-      if (text.indexOf(DATA_START_TAG) && text.includes(MESSAGE_END_TAG)) {
-        const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG));
-        if (dataText.length > 0) {
-          try {
-            const data = JSON.parse(dataText);
-            if (data.pccDeclaration) {
-              const pccDeclarationXml = await createPCCDeclarationXml(data.pccDeclaration);
-              yield `${DATA_START_TAG}${pccDeclarationXml}${DATA_END_TAG}`;
+        const conversation = await Conversation.findOne({ _id: body.conversationId })
+        if (!conversation) {
+          return error('Not Found', 404)
+        }
+        if (conversation.userId !== jwtData.userId) {
+          return error('Unauthorized', 401)
+        }
+        const userMessageTimestamp = Date.now()
+
+        const userContent: Content = {
+          role: "user",
+          parts: [{ text: body.message }],
+        }
+        if (body.fileData && body.mimeType) {
+          userContent.parts.push({
+            inlineData: {
+              mimeType: body.mimeType,
+              data: body.fileData
             }
-          } catch (error) {
-            console.error('Error parsing data', error);
+          })
+        }
+      
+        const result = await model.generateContentStream({
+          systemInstruction: instructions,
+          contents: [
+            ...conversation.messages.map(message => ({
+              role: message.role === MessageRole.USER ? "user" : "model",
+              parts: [{ text: message.text }],
+            })),
+            userContent,
+          ],
+          generationConfig,
+        })
+
+        let text = '';
+        let messageYieldFinished = false;
+        for await (const message of result.stream) {
+          const textChunk = message.text();
+          text += textChunk;
+          if (messageYieldFinished) continue;
+          if (!text.includes(MESSAGE_END_TAG)) {
+            yield textChunk;
+          } else if (text.includes(MESSAGE_END_TAG)) {
+            // Yield starting from textChunk to the end of the message
+            const messageStartIndex = text.indexOf(textChunk);
+            const messageEndIndex = text.indexOf(MESSAGE_END_TAG) + MESSAGE_END_TAG.length;
+            yield text.slice(messageStartIndex, messageEndIndex);
+            messageYieldFinished = true;
           }
         }
-      }
+        
+        // Process data after message yielding is complete
+        if (text.indexOf(DATA_START_TAG) && text.includes(MESSAGE_END_TAG)) {
+          const dataText = text.slice(text.indexOf(DATA_START_TAG) + DATA_START_TAG.length, text.indexOf(DATA_END_TAG));
+          if (dataText.length > 0) {
+            try {
+              const data = JSON.parse(dataText);
+              if (data.pccDeclaration) {
+                const pccDeclarationXml = await createPCCDeclarationXml(data.pccDeclaration);
+                yield `${DATA_START_TAG}${pccDeclarationXml}${DATA_END_TAG}`;
+              }
+            } catch (error) {
+              console.error('Error parsing data', error);
+            }
+          }
+        }
 
-      // Add the user message and the AI completion to the conversation
-      conversation.messages.push({
-        role: MessageRole.USER,
-        text: body.message,
-        timestamp: userMessageTimestamp,
-        file: body.fileData && body.mimeType ? {
-          data: body.fileData,
-          mimeType: body.mimeType
-        } : undefined
-      }, {
-        role: MessageRole.COMPLETION,
-        text,
-        timestamp: Date.now()
-      })
-      await conversation.save()
+        // Add the user message and the AI completion to the conversation
+        conversation.messages.push({
+          role: MessageRole.USER,
+          text: body.message,
+          timestamp: userMessageTimestamp,
+          file: body.fileData && body.mimeType ? {
+            data: body.fileData,
+            mimeType: body.mimeType
+          } : undefined
+        }, {
+          role: MessageRole.COMPLETION,
+          text,
+          timestamp: Date.now()
+        })
+        await conversation.save()
+      } catch (err) {
+        console.error(err)
+      }
     }, {
       body: t.Object({
         message: t.String({
