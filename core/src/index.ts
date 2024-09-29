@@ -125,7 +125,11 @@ const startApp = async () => {
       conversation.messages.push({
         role: MessageRole.USER,
         text: body.message,
-        timestamp: userMessageTimestamp
+        timestamp: userMessageTimestamp,
+        file: body.fileData && body.mimeType ? {
+          data: body.fileData,
+          mimeType: body.mimeType
+        } : undefined
       }, {
         role: MessageRole.COMPLETION,
         text,

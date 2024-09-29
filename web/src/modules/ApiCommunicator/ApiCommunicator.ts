@@ -9,6 +9,10 @@ export type IMessage = {
 	text: string;
 	role: MessageRole;
 	timestamp: number;
+	file?: {
+		data: string;
+		mimeType: string;
+	};
 };
 
 export type IConversation = {

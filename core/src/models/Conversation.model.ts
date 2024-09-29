@@ -9,6 +9,10 @@ export interface IMessage {
   text: string;
   role: MessageRole;
   timestamp: number;
+  file?: {
+    data: string;
+    mimeType: string;
+  };
 }
 
 export interface IConversation {
