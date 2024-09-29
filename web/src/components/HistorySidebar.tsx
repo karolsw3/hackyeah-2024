@@ -82,6 +82,7 @@ const HistorySidebar = () => {
 					</div>
 					{ conversations.map(conversation => (
 						<button
+							key={`conversation-button-${conversation._id}`}
 							className={classNames(
 								'w-full px-4 py-2',
 								'mb-2',
